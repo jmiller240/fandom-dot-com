@@ -1,0 +1,73 @@
+<body>
+    <div id="header">
+        <img id="logo" src="{{ url_for('static', filename='laceration.png') }}" />
+        <h1 id="title">
+            Hello, {{ name }}!
+        </h1>
+    </div>
+    <div id="content-container">
+        <!-- <div id="content-section"> -->
+            <button id="suk">suk me</button>
+        <!-- </div> -->
+    </div>
+    <div id="footer">
+        <div>(C) Jack Miller 2025</div>
+    </div>
+</body>
+
+<style>
+    body {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #6B9AC4;
+        min-height: 75px;
+
+    }
+    #logo {
+        min-height: 10px;
+        max-height: 50px;
+        position: fixed;
+    }
+    #title {
+        text-align: center;
+        margin: auto;
+    }
+    #content-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1 1 auto;
+    }
+    /* #content-section {
+        
+    } */
+    #suk {
+        background-color: #B6C8A9;
+        border-radius: 10%;
+        padding: 5%;
+        margin: auto;
+    }
+    #suk:hover {
+        cursor: pointer;
+    }
+    #footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex: 0 1 auto;
+        background-color: #dddddd;
+        min-height: 40px;
+        color: #EE7674;
+    }
+</style>
