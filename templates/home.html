@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- <div id="content-section"> -->
+    <form class="search-form" action="/" method="POST">
+        <label class="search-form-element" for="team">Choose a team</label><br>
+        <select name="team" id="team">
+            {% for team_name in teams_list %}
+                <option value="{{ team_name }}">{{ team_name }}</option>
+            {% endfor %}
+        </select>
+        <input class="search-form-element" style="background-color: #EE7674;" type="submit" value="Go!">
+
+        
+    </form>
+    <!-- <form class="search-form" action="/" method="POST">
+        <label class="search-form-element" for="team">Enter a team name</label><br>
+        <input class="search-form-element" type="text" id="team" name="team"><br>
+        <input class="search-form-element" style="background-color: #EE7674;" type="submit" value="Go!">
+    </form> -->
+<!-- </div> -->
+{% endblock content %}

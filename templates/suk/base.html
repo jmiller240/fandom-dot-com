@@ -1,14 +1,10 @@
 <body>
     <div id="header">
-        <img id="logo" src="{{ url_for('static', filename='laceration.png') }}" />
-        <h1 id="title">
-            Hello, {{ name }}!
-        </h1>
+        <a id="logo" href="/hi"><img src="{{ url_for('static', filename='laceration.png') }}" /></a>
+        <a id="title" href="/hi"><h1>Hello!</h1></a>
     </div>
     <div id="content-container">
-        <!-- <div id="content-section"> -->
-            <button id="suk">suk me</button>
-        <!-- </div> -->
+        {% block content %}<p>No messages.</p>{% endblock content %}
     </div>
     <div id="footer">
         <div>(C) Jack Miller 2025</div>
@@ -33,14 +29,16 @@
         min-height: 75px;
 
     }
-    #logo {
+    #logo * {
         min-height: 10px;
         max-height: 50px;
-        position: fixed;
+        /* position: fixed; */
     }
     #title {
         text-align: center;
+        color: black;
         margin: auto;
+        text-decoration: none;
     }
     #content-container {
         display: flex;
@@ -56,9 +54,16 @@
         border-radius: 10%;
         padding: 5%;
         margin: auto;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-content: space-evenly;
     }
     #suk:hover {
         cursor: pointer;
+    }
+    .suk-element {
+        margin: 10px;
     }
     #footer {
         display: flex;
@@ -71,3 +76,9 @@
         color: #EE7674;
     }
 </style>
+
+<script>
+    function onclick() {
+        window.fetch('/suk')
+    }
+</script>

@@ -1,2 +1,10 @@
+## Folders
 .conda
 *pycache*
+
+## Files
+notes.txt
+
+
+*.DS_STORE
+*.db

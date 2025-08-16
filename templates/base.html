@@ -1,0 +1,86 @@
+<body>
+    <div id="header">
+        <a id="logo" href="/"><img src="{{ url_for('static', filename='crown-logo.png') }}" /></a>
+        <a id="title" href="/"><h1>fandom</h1></a>
+    </div>
+    <div id="content-container">
+        {% block content %}<p>No messages.</p>{% endblock content %}
+    </div>
+    <div id="footer">
+        <div>(C) Jack Miller 2025</div>
+    </div>
+</body>
+
+<style>
+    body {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #6B9AC4;
+        min-height: 75px;
+
+    }
+    #logo * {
+        min-height: 10px;
+        max-height: 50px;
+        /* position: fixed; */
+    }
+    #title {
+        text-align: center;
+        color: black;
+        margin: auto;
+        text-decoration: none;
+    }
+    #content-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1 1 auto;
+    }
+    /* #content-section {
+        
+    } */
+    #footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex: 0 1 auto;
+        background-color: #dddddd;
+        min-height: 40px;
+        color: #EE7674;
+    }
+    .search-form {
+        background-color: #B6C8A9;
+        border-radius: 10%;
+        padding: 5%;
+        margin: auto;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-content: space-evenly;
+        align-items: center;
+    }
+    .search-form:hover {
+        cursor: pointer;
+    }
+    .search-form-element {
+        margin: 10px;
+        text-align: center;
+    }
+</style>
+
+<script>
+    function onclick() {
+        window.fetch('/suk')
+    }
+</script>
