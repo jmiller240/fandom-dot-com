@@ -2,9 +2,73 @@
 
 {% block content %}
 <!-- <div id="content-section"> -->
-    <div class="search-form">
-        <p class="search-form-element">Hey, {{ team }} fan!</p>
-        <img class="search-form-element" src="{{ team_logo_url }}" width="50" height="50"/>
+    <div class="team-page-container">
+        <div class="team-page-header">
+            <div class="team-header">
+                <img class="team-header-logo" src="{{ team_logo_url }}"/>
+                <p class="team-header-name">{{ team_full_name }}</p>
+            </div>
+        </div>
+        <div class="team-page-content">
+            <div class="team-page-games-container">
+                <div class="team-page-games-header">
+                    <p>Schedule</p>
+                </div>
+                {% for game in games_list %}
+                <a class="game-card" href="/boxscore/{{ game['event_id'] }}">
+                    <div class="game-card-header">
+                        <p>{{ game['date'] }}</p>
+                        <div class="league-container">
+                            <p class="league-name">NFL</p>
+                            <img class="league-logo" src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png"/>
+                        </div>
+                    </div>
+                    <div class="game-card-result">
+                        <!-- <div id="away-team" class="game-card-away-team-container {{ 'winner' if game['winner'] == 'away' else '' }}"> -->
+                        <div id="away-team" class="game-card-away-team-container">
+                            <p class="game-card-team-name">{{ game['away-team'] }}</p>
+                            <img class="game-card-team-logo" src="{{ game['away-team-logo'] }}"/>
+                        </div>
+                        {% if game['completed'] == False %}
+                        <p id="result" class="game-card-result-element">
+                            {{ game['time'] }}
+                        </p>
+                        {% else %}
+                        <p id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-winner'] == True else 'result-card-loser' }}">
+                            {{ game['game-score-string'] if game['completed'] else game['time'] }}
+                        </p>
+                        {% endif %}
+                        <!-- <div id="home-team" class="game-card-home-team-container {{ 'winner' if game['winner'] == 'home' else '' }}"> -->
+                        <div id="home-team" class="game-card-home-team-container">
+                            <img class="game-card-team-logo" src="{{ game['home-team-logo'] }}"/>
+                            <p class="game-card-team-name">{{ game['home-team'] }}</p>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="team-page-info-container">
+                <div class="team-page-record-card">
+                    <!-- <p class="team-page-record-header">Record</p> -->
+                    <table class="table team-page-record-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Record</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for type,record in team_record.items() %}
+                            <tr>
+                                <th>{{ type }}</th>
+                                <th>{{ record }}</th>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 <!-- </div> -->
 {% endblock content %}
