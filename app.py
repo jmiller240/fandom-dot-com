@@ -102,62 +102,64 @@ def team_schedule(team: str):
     }
 
     ## Get schedule
-    # TEAMS_SCHEDULE_URL = f'https://partners.api.espn.com/v2/sports/football/nfl/teams/{team_id}/events?season=2025'
-    # response = requests.get(TEAMS_SCHEDULE_URL)
-    # events = response.json()['events']
+    TEAMS_SCHEDULE_URL = f'https://partners.api.espn.com/v2/sports/football/nfl/teams/{team_id}/events?season=2025'
+    response = requests.get(TEAMS_SCHEDULE_URL)
+    events = response.json()['events']
 
-    # games = []
-    # for game in events:
-    #     event_id = game['id']
-    #     date = format_date_from_date(game['date'])
-    #     time = format_time_from_date(game['date'])
-    #     competition = game['competitions'][0]
-    #     completed = competition['status']['type']['completed']
-    #     home_team = competition['competitors'][0]
-    #     away_team = competition['competitors'][1]
+    games = []
+    for game in events:
+        event_id = game['id']
+        date = format_date_from_date(game['date'])
+        time = format_time_from_date(game['date'])
+        competition = game['competitions'][0]
+        completed = competition['status']['type']['completed']
+        home_team = competition['competitors'][0]
+        away_team = competition['competitors'][1]
 
-    #     # Get home team logo
-    #     home_team_id = int(home_team['id'])    
-    #     away_team_id = int(away_team['id'])
-        
-    #     home_team_logo = get_team_logo_url(home_team_id)
-    #     away_team_logo = get_team_logo_url(away_team_id)
+        # Get home team logo
+        home_team_id = int(home_team['id'])    
+        away_team_id = int(away_team['id'])
+        selected_team_is_home = team_id == home_team_id
 
-    #     winner = None
-    #     home_team_score = None
-    #     away_team_score = None
-    #     if completed:
-    #         winner = 'home' if home_team['score']['winner'] else 'away'
-    #         selected_team_winner = (winner == 'home' and team_id == home_team_id) or (winner == 'away' and team_id == away_team_id)
-    #         home_team_score = int(home_team['score']['value'])
-    #         away_team_score = int(away_team['score']['value'])
-    #         game_score_string = str(away_team_score) + " - " + str(home_team_score)
+        home_team_logo = get_team_logo_url(home_team_id)
+        away_team_logo = get_team_logo_url(away_team_id)
+
+        result = None
+        home_team_score = None
+        away_team_score = None
+        if completed:
+            result = 'home' if home_team['score']['winner'] else 'away' if away_team['score']['winner'] else 'tie'
+            # selected_team_winner = (winner == 'home' and team_id == home_team_id) or (winner == 'away' and team_id == away_team_id)
+            selected_team_result = 'tie' if result == 'tie' else 'win' if ((result == 'home' and selected_team_is_home) or (result == 'away' and not selected_team_is_home)) else 'loss'
+            home_team_score = int(home_team['score']['value'])
+            away_team_score = int(away_team['score']['value'])
+            game_score_string = str(away_team_score) + " - " + str(home_team_score)
 
 
-    #     game_dict = {
-    #         'event_id': event_id,
-    #         'date': date,
-    #         'time': time,
-    #         'completed': completed,
-    #         'home-team': home_team['team']['abbreviation'],
-    #         'home-team-logo': home_team_logo,
-    #         'home-team-score': home_team_score,
-    #         'away-team': away_team['team']['abbreviation'],
-    #         'away-team-logo': away_team_logo,
-    #         'away-team-score': away_team_score,
-    #         'game-score-string': game_score_string,
-    #         'winner': winner,
-    #         'selected-team-winner': selected_team_winner
-    #     }
-    #     print(game_dict)
-    #     games.append(game_dict)
+        game_dict = {
+            'event_id': event_id,
+            'date': date,
+            'time': time,
+            'completed': completed,
+            'home-team': home_team['team']['abbreviation'],
+            'home-team-logo': home_team_logo,
+            'home-team-score': home_team_score,
+            'away-team': away_team['team']['abbreviation'],
+            'away-team-logo': away_team_logo,
+            'away-team-score': away_team_score,
+            'game-score-string': game_score_string,
+            'winner': result,
+            'selected-team-result': selected_team_result
+        }
+        print(game_dict)
+        games.append(game_dict)
 
     # with open('data/games.txt', 'w+') as file:
     #     file.write(json.dumps(games))
 
-    games = []
-    with open('data/games.txt', 'r+') as file:
-        games = json.load(file)
+    # games = []
+    # with open('data/games.txt', 'r+') as file:
+    #     games = json.load(file)
 
     return render_template('team-schedule.html', team=team, team_full_name=full_name, team_logo_url=logo_url, team_record=team_record, games_list=games)
 
@@ -165,8 +167,68 @@ def team_schedule(team: str):
 def box_score(event_id: int):
     EVENT_BASE_URL = 'http://site.api.espn.com/apis/site/v2/sports/football/nfl/summary'
     response = requests.get(f'{EVENT_BASE_URL}?event={event_id}').json()
+    
+    ## General game info
+    competition = response['header']['competitions'][0]
+    date = format_date_from_date(competition['date'])
+    start_time = format_time_from_date(competition['date'])
+    venue = response['gameInfo']['venue']['fullName']
+    city = response['gameInfo']['venue']['address']['city']
+    state = response['gameInfo']['venue']['address']['state']
+    attendance = response['gameInfo']['attendance']
 
-    return response
+    league = {
+        'name': 'NFL',
+        'logo_url': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'
+    }
+    home_team_obj = competition['competitors'][0]
+    home_team_id = int(home_team_obj['team']['id'])
+    home_team_score_obj = home_team_obj['linescores']
+    home_team = {
+        'id': home_team_id,
+        'name': home_team_obj['team']['name'],
+        'logo_url': get_team_logo_url(home_team_id),
+        'winner': home_team_obj['winner'],
+        'score': {
+            'Q1': home_team_score_obj[0]['displayValue'],
+            'Q2': home_team_score_obj[1]['displayValue'],
+            'Q3': home_team_score_obj[2]['displayValue'],
+            'Q4': home_team_score_obj[3]['displayValue'],
+            'Total': home_team_obj['score']
+        },
+    }
+
+    away_team_obj = competition['competitors'][1]
+    away_team_id = int(away_team_obj['team']['id'])
+    away_team_score_obj = away_team_obj['linescores']
+    away_team = {
+        'id': away_team_id,
+        'name': away_team_obj['team']['name'],
+        'logo_url': get_team_logo_url(away_team_id),
+        'winner': away_team_obj['winner'],
+        'score': {
+            'Q1': away_team_score_obj[0]['displayValue'],
+            'Q2': away_team_score_obj[1]['displayValue'],
+            'Q3': away_team_score_obj[2]['displayValue'],
+            'Q4': away_team_score_obj[3]['displayValue'],
+            'Total': away_team_obj['score']
+        },
+    }
+
+    game_info = {
+        'date': date,
+        'start-time': start_time,
+        'venue': venue,
+        'city': city,
+        'state': state,
+        'attendance': attendance,
+        'league': league,
+        'home-team': home_team,
+        'away-team': away_team,
+        'winner': 'home' if home_team['winner'] else 'away'
+    }
+
+    return render_template('game-page.html', game_info=game_info)
 
 @app.route("/hi", methods=['GET', 'POST'])
 def suk_home():

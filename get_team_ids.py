@@ -3,7 +3,7 @@ from pprint import pprint
 import pandas as pd
 
 
-TEAMS_BASE_URL = 'https://partners.api.espn.com/v2/sports/football/nfl/teams'
+TEAMS_BASE_URL = 'https://partners.api.espn.com/v2/sports/basketball/nba/teams'
 response = requests.get(TEAMS_BASE_URL)
 
 d = response.json()
@@ -34,4 +34,4 @@ teams_df['logoURL'] = teams_df['id'].apply(lambda x: get_team_logo_url(x))
 
 teams_df = teams_df.sort_values(by='id', ascending=True).reset_index(drop=True)
 
-teams_df.to_csv('data/team_info.csv', index=False)
+teams_df.to_csv('data/nba_team_info.csv', index=False)
