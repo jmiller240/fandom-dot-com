@@ -23,8 +23,11 @@
                 <a class="game-card" href="/{{ game['league']['name'] }}/boxscore/{{ game['event_id'] }}">
                     <div class="game-card-header">
                         <p>{{ game['date'] }}</p>
+                        {% if game['headline'] != '' %}
+                        <span>{{game['headline']}}</span>
+                        {% endif %}
                         <div class="league-container">
-                            <p class="league-name">{{game['league']['name']}}</p>
+                            <span class="league-name">{{game['league']['name'] + ' ' + game['season']['type'] }}</span>
                             <img class="league-logo" src="{{ game['league']['logo-url'] }}"/>
                         </div>
                     </div>

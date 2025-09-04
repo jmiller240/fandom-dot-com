@@ -1,0 +1,224 @@
+import requests
+from datetime import datetime
+import pytz
+import pprint
+import pandas as pd
+
+from ..helpers.functions import format_date_from_date, format_time_from_date
+
+
+NFL_LEAGUE_OBJ = {
+    'name': 'NFL',
+    'logo-url': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'
+}
+NBA_LEAGUE_OBJ = {
+    'name': 'NBA',
+    'logo-url': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png'
+}
+
+# http://site.api.espn.com/apis/site/v2/sports/football/nfl/seasons/2025/teams/11
+
+
+class ESPNAPIService:
+
+    def __init__(self, teams_df: pd.DataFrame):
+        self.teams_df: pd.DataFrame = teams_df
+    
+    def _get_site_api_espn_base_url(self, league):
+        if league == 'NFL':
+            return 'http://site.api.espn.com/apis/site/v2/sports/football/nfl'
+        elif league == 'NBA':
+            return 'http://site.api.espn.com/apis/site/v2/sports/basketball/nba'
+        elif league == 'CFB':
+            return 'http://site.api.espn.com/apis/site/v2/sports/football/college-football'
+
+
+    def get_team_schedule(self, league: str, team_id: int, season: int):
+        print(f'preseason games')
+
+        league_obj = NFL_LEAGUE_OBJ if league == 'NFL' else NBA_LEAGUE_OBJ
+
+        games = []
+        for seasontype in [1,2,3]:
+            # Url
+            base_url = self._get_site_api_espn_base_url(league=league)
+            events_url = f'{base_url}/teams/{team_id}/schedule?season={season}&seasontype={seasontype}'
+            
+            response = requests.get(events_url)
+            events = response.json()['events']
+            print('Games: ', len(events))
+            
+            for game in events:
+                event_id = game['id']
+                competition = game['competitions'][0]
+
+                # Game info
+                date = format_date_from_date(game['date'])
+                time = format_time_from_date(game['date'])
+                season_obj = {
+                    'name': game['season']['displayName'],
+                    'type': game['seasonType']['name']
+                }
+                headline = competition['notes'][0]['headline'] if competition['notes'] else ''
+
+                completed = competition['status']['type']['completed']
+                home_team = competition['competitors'][0]
+                away_team = competition['competitors'][1]
+                
+                # Get home team logo
+                # home_team_id =   
+                # away_team_id = int(away_team['id'])
+                selected_team_is_home = (team_id == int(home_team['id']))  
+
+                # if home_team_id not in self.teams_df['id'].tolist() or away_team_id not in self.teams_df['id'].tolist():
+                #     continue
+
+                home_team_logo = home_team['team']['logos'][0]['href']
+                away_team_logo = away_team['team']['logos'][0]['href']
+
+                result = None
+                home_team_score = None
+                away_team_score = None
+                game_score_string = None
+                selected_team_result = None
+                if completed:
+                    result = 'home' if home_team['winner'] else 'away' if away_team['winner'] else 'tie'
+                    selected_team_result = 'tie' if result == 'tie' else 'win' if ((result == 'home' and selected_team_is_home) or (result == 'away' and not selected_team_is_home)) else 'loss'
+                    home_team_score = int(home_team['score']['value'])
+                    away_team_score = int(away_team['score']['value'])
+                    game_score_string = str(away_team_score) + " - " + str(home_team_score)
+
+                game_dict = {
+                    'event_id': event_id,
+                    'date': date,
+                    'time': time,
+                    'league': league_obj,
+                    'season': season_obj,
+                    'headline': headline,
+                    'completed': completed,
+                    'home-team': home_team['team']['abbreviation'],
+                    'home-team-logo': home_team_logo,
+                    'home-team-score': home_team_score,
+                    'away-team': away_team['team']['abbreviation'],
+                    'away-team-logo': away_team_logo,
+                    'away-team-score': away_team_score,
+                    'game-score-string': game_score_string,
+                    'winner': result,
+                    'selected-team-result': selected_team_result
+                }
+                games.append(game_dict)
+
+        return games
+    
+    def get_game_info(self, league: str, event_id: int):
+        ## Hit API
+        base_url = self._get_site_api_espn_base_url(league=league)
+        event_url = f'{base_url}/summary?event={event_id}'
+        response = requests.get(event_url).json()
+        print(response)
+
+        ## General game info
+        league_obj = NFL_LEAGUE_OBJ if league == 'NFL' else NBA_LEAGUE_OBJ
+
+        competition = response['header']['competitions'][0]
+
+        game_status = competition['status']['type']['name']
+        game_completed = competition['status']['type']['completed']
+
+        date = format_date_from_date(competition['date'])
+        start_time = format_time_from_date(competition['date'])
+        venue = response['gameInfo']['venue']['fullName']
+        city = response['gameInfo']['venue']['address']['city']
+        state = response['gameInfo']['venue']['address']['state']
+        
+        attendance = response['gameInfo']['attendance'] if game_completed else 0
+        game_winner = None
+
+        ## Home team info
+        home_team_obj = competition['competitors'][0]
+        home_team_id = int(home_team_obj['team']['id'])
+        home_team = {
+            'id': home_team_id,
+            'name': home_team_obj['team']['name'],
+            # 'logo_url': get_team_logo_url(league=league, id=home_team_id),
+            'logo_url': home_team_obj['team']['logos'][0]['href'],
+            'winner': False,
+        }
+
+        ## Away team info
+        away_team_obj = competition['competitors'][1]
+        away_team_id = int(away_team_obj['team']['id'])
+        away_team = {
+            'id': away_team_id,
+            'name': away_team_obj['team']['name'],
+            # 'logo_url': get_team_logo_url(league=league, id=away_team_id),
+            'logo_url': away_team_obj['team']['logos'][0]['href'],
+            'winner': False,
+        }
+
+        if game_completed:
+            ## Home team scores
+            home_team['winner'] = home_team_obj['winner'],
+
+            home_team_score_obj = home_team_obj['linescores']
+            periods_in_game = len(home_team_score_obj)
+
+            # Regulation line scores
+            home_team['score'] = {f'Q{i + 1}': home_team_score_obj[i]['displayValue'] for i in range(0, 4)}
+            
+            # Add in OT
+            if periods_in_game > 4:
+                if periods_in_game == 5:
+                    home_team['score']['OT'] = home_team_score_obj[4]['displayValue']
+                else:
+                    ot_period = 1
+                    for i in range(4, periods_in_game):
+                        home_team['score'][f'OT{ot_period}'] = home_team_score_obj[i]['displayValue']
+                        ot_period += 1
+            
+            # Total score
+            home_team['score']['Total'] = home_team_obj['score']
+            
+            ## Away team scores
+            away_team['winner'] = away_team_obj['winner'],
+
+            away_team_score_obj = away_team_obj['linescores']
+            periods_in_game = len(away_team_score_obj)
+
+            # Regulation line scores
+            away_team['score'] = {f'Q{i + 1}': away_team_score_obj[i]['displayValue'] for i in range(0, 4)}
+            
+            # Add in OT
+            if periods_in_game > 4:
+                if periods_in_game == 5:
+                    away_team['score']['OT'] = away_team_score_obj[4]['displayValue']
+                else:
+                    ot_period = 1
+                    for i in range(4, periods_in_game):
+                        away_team['score'][f'OT{ot_period}'] = away_team_score_obj[i]['displayValue']
+                        ot_period += 1
+            
+            # Total score
+            away_team['score']['Total'] = away_team_obj['score']
+
+            print(home_team['score'])
+            print(away_team['score'])
+
+            game_winner = 'home' if home_team['winner'] else 'away'
+
+        ## Final game object
+        game_info = {
+            'date': date,
+            'start-time': start_time,
+            'venue': venue,
+            'city': city,
+            'state': state,
+            'completed': game_completed,
+            'attendance': attendance,
+            'league': league_obj,
+            'home-team': home_team,
+            'away-team': away_team,
+            'winner': game_winner
+        }
+
+        return game_info

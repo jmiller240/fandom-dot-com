@@ -71,29 +71,38 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Q1</th>
+                                {% for period in game_info['home-team']['score'].keys() %}
+                                <th>{{ period }}</th>
+                                {% endfor%}
+                                <!-- <th>Q1</th>
                                 <th>Q2</th>
                                 <th>Q3</th>
                                 <th>Q4</th>
-                                <th>Total</th>
+                                <th>Total</th> -->
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <th>{{ game_info['away-team']['name']}}</th>
-                                <th>{{ game_info['away-team']['score']['Q1'] }}</th>
+                                {% for score in game_info['away-team']['score'].values() %}
+                                <th>{{ score }}</th>
+                                {% endfor%}
+                                <!-- <th>{{ game_info['away-team']['score']['Q1'] }}</th>
                                 <th>{{ game_info['away-team']['score']['Q2'] }}</th>
                                 <th>{{ game_info['away-team']['score']['Q3'] }}</th>
                                 <th>{{ game_info['away-team']['score']['Q4'] }}</th>
-                                <th>{{ game_info['away-team']['score']['Total'] }}</th>
+                                <th>{{ game_info['away-team']['score']['Total'] }}</th> -->
                             </tr>
                             <tr>
                                 <th>{{ game_info['home-team']['name']}}</th>
-                                <th>{{ game_info['home-team']['score']['Q1'] }}</th>
+                                {% for score in game_info['home-team']['score'].values() %}
+                                <th>{{ score }}</th>
+                                {% endfor%}
+                                <!-- <th>{{ game_info['home-team']['score']['Q1'] }}</th>
                                 <th>{{ game_info['home-team']['score']['Q2'] }}</th>
                                 <th>{{ game_info['home-team']['score']['Q3'] }}</th>
                                 <th>{{ game_info['home-team']['score']['Q4'] }}</th>
-                                <th>{{ game_info['home-team']['score']['Total'] }}</th>
+                                <th>{{ game_info['home-team']['score']['Total'] }}</th> -->
                             </tr>
                         </tbody>
                     </table>

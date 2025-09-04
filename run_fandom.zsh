@@ -1,3 +1,3 @@
 #!/bin/zsh
 
-flask --app app.py run --debug --port 8000
+flask --app fandom_dot_com/app.py run --debug --port 8000
