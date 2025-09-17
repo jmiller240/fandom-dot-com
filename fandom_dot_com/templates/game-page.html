@@ -24,7 +24,7 @@
             <header class="game-page-header-result-container">
                 <section class="game-page-header-result-status-section">
                     <div class="game-page-header-team-name-container-left">
-                        <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['away-team']['id'] }}">
+                        <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['away-team']['id'] }}/season/{{ game_info['season']['year'] }}">
                             <div class="team-name-wrapper">
                                 <span class="team-name-header">
                                     {{ game_info['away-team']['name'] }}
@@ -40,20 +40,20 @@
                         <span class="game-page-header-score">
                             {{ game_info['away-team']['score']['Total'] }} - {{ game_info['home-team']['score']['Total'] }}
                         </span>
-                        <span class="game-page-header-status">
+                        <span class="secondary-font-color">
                             Final
                         </span>
                         {% else %}
                         <span class="game-page-header-score">
                             {{ game_info['start-time'] }}
                         </span>
-                        <span class="game-page-header-status">
+                        <span class="secondary-font-color">
                             {{ game_info['date'] }}
                         </span>
                         {% endif %}
                     </div>
                     <div class="game-page-header-team-name-container-right">
-                        <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['home-team']['id'] }}">
+                        <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['home-team']['id'] }}/season/{{ game_info['season']['year'] }}">
                             <div class="team-name-wrapper">
                                 <div class="team-logo-wrapper-right">
                                     <img src="{{ game_info['home-team']['logo_url'] }}" class="team-logo-header"/> <!--src="{{ team_logo_url }}"/> -->

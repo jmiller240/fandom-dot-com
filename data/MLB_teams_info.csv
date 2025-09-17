@@ -1,0 +1,31 @@
+id,displayName,location,name,shortDisplayName,abbreviation,color,alternateColor,logoURL,league
+1,Baltimore Orioles,Baltimore,Orioles,Orioles,BAL,df4601,000000,https://a.espncdn.com/i/teamlogos/mlb/500/bal.png,MLB
+2,Boston Red Sox,Boston,Red Sox,Red Sox,BOS,0d2b56,bd3039,https://a.espncdn.com/i/teamlogos/mlb/500/bos.png,MLB
+3,Los Angeles Angels,Los Angeles,Angels,Angels,LAA,ba0021,c4ced4,https://a.espncdn.com/i/teamlogos/mlb/500/laa.png,MLB
+4,Chicago White Sox,Chicago,White Sox,White Sox,CHW,000000,c4ced4,https://a.espncdn.com/i/teamlogos/mlb/500/chw.png,MLB
+5,Cleveland Guardians,Cleveland,Guardians,Guardians,CLE,002b5c,e31937,https://a.espncdn.com/i/teamlogos/mlb/500/cle.png,MLB
+6,Detroit Tigers,Detroit,Tigers,Tigers,DET,0a2240,ff4713,https://a.espncdn.com/i/teamlogos/mlb/500/det.png,MLB
+7,Kansas City Royals,Kansas City,Royals,Royals,KC,004687,7ab2dd,https://a.espncdn.com/i/teamlogos/mlb/500/kc.png,MLB
+8,Milwaukee Brewers,Milwaukee,Brewers,Brewers,MIL,13294b,ffc72c,https://a.espncdn.com/i/teamlogos/mlb/500/mil.png,MLB
+9,Minnesota Twins,Minnesota,Twins,Twins,MIN,031f40,e20e32,https://a.espncdn.com/i/teamlogos/mlb/500/min.png,MLB
+10,New York Yankees,New York,Yankees,Yankees,NYY,132448,c4ced4,https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png,MLB
+11,Athletics,Athletics,Athletics,Athletics,ATH,003831,efb21e,https://a.espncdn.com/i/teamlogos/mlb/500/ath.png,MLB
+12,Seattle Mariners,Seattle,Mariners,Mariners,SEA,005c5c,0c2c56,https://a.espncdn.com/i/teamlogos/mlb/500/sea.png,MLB
+13,Texas Rangers,Texas,Rangers,Rangers,TEX,003278,c0111f,https://a.espncdn.com/i/teamlogos/mlb/500/tex.png,MLB
+14,Toronto Blue Jays,Toronto,Blue Jays,Blue Jays,TOR,134a8e,6cace5,https://a.espncdn.com/i/teamlogos/mlb/500/tor.png,MLB
+15,Atlanta Braves,Atlanta,Braves,Braves,ATL,0c2340,ba0c2f,https://a.espncdn.com/i/teamlogos/mlb/500/atl.png,MLB
+16,Chicago Cubs,Chicago,Cubs,Cubs,CHC,0e3386,cc3433,https://a.espncdn.com/i/teamlogos/mlb/500/chc.png,MLB
+17,Cincinnati Reds,Cincinnati,Reds,Reds,CIN,c6011f,ffffff,https://a.espncdn.com/i/teamlogos/mlb/500/cin.png,MLB
+18,Houston Astros,Houston,Astros,Astros,HOU,002d62,eb6e1f,https://a.espncdn.com/i/teamlogos/mlb/500/hou.png,MLB
+19,Los Angeles Dodgers,Los Angeles,Dodgers,Dodgers,LAD,005a9c,ffffff,https://a.espncdn.com/i/teamlogos/mlb/500/lad.png,MLB
+20,Washington Nationals,Washington,Nationals,Nationals,WSH,ab0003,11225b,https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png,MLB
+21,New York Mets,New York,Mets,Mets,NYM,002d72,ff5910,https://a.espncdn.com/i/teamlogos/mlb/500/nym.png,MLB
+22,Philadelphia Phillies,Philadelphia,Phillies,Phillies,PHI,e81828,003278,https://a.espncdn.com/i/teamlogos/mlb/500/phi.png,MLB
+23,Pittsburgh Pirates,Pittsburgh,Pirates,Pirates,PIT,000000,fdb827,https://a.espncdn.com/i/teamlogos/mlb/500/pit.png,MLB
+24,St. Louis Cardinals,St. Louis,Cardinals,Cardinals,STL,be0a14,001541,https://a.espncdn.com/i/teamlogos/mlb/500/stl.png,MLB
+25,San Diego Padres,San Diego,Padres,Padres,SD,2f241d,ffc425,https://a.espncdn.com/i/teamlogos/mlb/500/sd.png,MLB
+26,San Francisco Giants,San Francisco,Giants,Giants,SF,000000,fd5a1e,https://a.espncdn.com/i/teamlogos/mlb/500/sf.png,MLB
+27,Colorado Rockies,Colorado,Rockies,Rockies,COL,33006f,000000,https://a.espncdn.com/i/teamlogos/mlb/500/col.png,MLB
+28,Miami Marlins,Miami,Marlins,Marlins,MIA,00a3e0,000000,https://a.espncdn.com/i/teamlogos/mlb/500/mia.png,MLB
+29,Arizona Diamondbacks,Arizona,Diamondbacks,Diamondbacks,ARI,aa182c,000000,https://a.espncdn.com/i/teamlogos/mlb/500/ari.png,MLB
+30,Tampa Bay Rays,Tampa Bay,Rays,Rays,TB,092c5c,8fbce6,https://a.espncdn.com/i/teamlogos/mlb/500/tb.png,MLB

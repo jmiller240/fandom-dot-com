@@ -3,8 +3,12 @@
     <head>
         <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
         <title>fandom</title>
+
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/basecoat.cdn.min.css">
         <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+        
+        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/js/basecoat.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/js/tabs.min.js" defer></script>
     </head>
     <body id="base-body">
         <!-- <div id="some-content">
@@ -14,6 +18,21 @@
             <a class="app-logo-container" href="/">
                 <img class="app-logo" src="{{ url_for('static', filename='crown-logo.png') }}" />
                 <p class="app-title">fandom</p>
+            </a>
+            <div class="app-header-selected-team-logos-wrapper">
+                {% if 'selected-teams' in session %}
+                    {% for team in session['selected-teams'] %}
+                    <a href="/{{ team['league'] }}/team/{{ team['id'] }}/season/2025">
+                        <img class="app-selected-team-icon" src="{{ team['logoURL'] }}"/>
+                    </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <a class="app-logout-wrapper" href="/logout">
+                {% if 'username' in session %}
+                <span>Hi, {{ session['username'] }}!</span>
+                {% endif %}
+                <img class="app-logout-icon" src="{{ url_for('static', filename='logout-icon.png') }}">
             </a>
         </div>
         <div id="content-container">

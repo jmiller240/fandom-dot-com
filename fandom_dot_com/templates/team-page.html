@@ -17,16 +17,23 @@
         <div class="team-page-content">
             <div class="team-page-games-container">
                 <div class="team-page-games-header">
-                    <p>Schedule</p>
+                    <a class="nav-icon-wrapper flex-align-left" href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ season - 1}}">
+                        <img class="nav-icon" src="{{ url_for('static', filename='back-icon.png') }}">
+                    </a>
+                    <div class="team-page-games-header-season-wrapper">
+                        <span class="team-page-games-header-schedule">Schedule</span>
+                        <span>{{ season }}</span>
+                    </div>
+                    <a class="nav-icon-wrapper flex-align-right" href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ season + 1}}">
+                        <img class="nav-icon" src="{{ url_for('static', filename='next-icon.png') }}">
+                    </a>
                 </div>
                 {% for game in games_list %}
                 <a class="game-card" href="/{{ game['league']['name'] }}/boxscore/{{ game['event_id'] }}">
                     <div class="game-card-header">
-                        <p>{{ game['date'] }}</p>
-                        {% if game['headline'] != '' %}
-                        <span>{{game['headline']}}</span>
-                        {% endif %}
-                        <div class="league-container">
+                        <span class="grid-align-left">{{ game['date'] }}</span>
+                        <span class="grid-align-center">{{game['headline']}}</span>
+                        <div class="league-container grid-align-right">
                             <span class="league-name">{{game['league']['name'] + ' ' + game['season']['type'] }}</span>
                             <img class="league-logo" src="{{ game['league']['logo-url'] }}"/>
                         </div>
@@ -38,13 +45,17 @@
                             <img class="team-logo-detail" src="{{ game['away-team-logo'] }}"/>
                         </div>
                         {% if game['completed'] == False %}
-                        <p id="result" class="game-card-result-element">
-                            {{ game['time'] }}
-                        </p>
+                        <div class="game-card-result-wrapper">
+                            <span id="result" class="game-card-result-element">
+                                {{ game['time'] }}
+                            </span>
+                        </div>
                         {% else %}
-                        <p id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-result'] == 'win' else 'result-card-loser' if game['selected-team-result'] == 'loss' else 'result-card-tie' }}">
-                            {{ game['game-score-string'] if game['completed'] else game['time'] }}
-                        </p>
+                        <div class="game-card-result-wrapper">
+                            <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-result'] == 'win' else 'result-card-loser' if game['selected-team-result'] == 'loss' else 'result-card-tie' }}">
+                                {{ game['game-score-string'] if game['completed'] else game['time'] }}
+                            </span>
+                        </div>
                         {% endif %}
                         <!-- <div id="home-team" class="game-card-home-team-container {{ 'winner' if game['winner'] == 'home' else '' }}"> -->
                         <div id="home-team" class="game-card-home-team-container">
@@ -66,7 +77,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for type,record in team_record.items() %}
+                        {% for type,record in team['record'].items() %}
                             <tr>
                                 <th>{{ type }}</th>
                                 <th>{{ record }}</th>
