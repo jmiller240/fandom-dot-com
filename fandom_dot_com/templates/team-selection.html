@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- <form class="search-form" action="/" method="POST">
+        <label class="search-form-element" for="team-id">Choose a team</label><br>
+        <select name="team-id" id="team" required>
+            {% for league,teams_list in teams.items() %}
+            <optgroup label="{{ league }}">
+                {% for team_dict in teams_list %}
+                    <option value="{{ team_dict['app-id'] }}">{{ team_dict['name'] }}</option>
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+        </select>
+        <input class="search-form-element" style="background-color: #EE7674;" type="submit" value="Go!">
+    </form> -->
+
+    <div class="page-container">
+        <form class="form card team-selection-card" action="/team-selection" method="POST">
+            <label class="label gap-3">Hi {{ username }}, select some teams</label>
+            <section class="accordion">
+                {% for league,teams_list in teams.items() %}
+                <details class="group border-b last:border-b-0">
+                    <summary class="w-full focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-all outline-none rounded-md">
+                        <h2 class="flex flex-1 items-start justify-between gap-4 py-4 text-left text-sm font-medium hover:underline">
+                            {{ league }}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200 group-open:rotate-180"><path d="m6 9 6 6 6-6" /></svg>
+                        </h2>
+                    </summary>
+
+                    <section class="pb-4">
+                        {% for team_dict in teams_list %}
+                        <label class="label gap-3">
+                            <img class="team-logo-detail" src="{{ team_dict['logoURL'] }}"/>
+                            {{ team_dict['name'] }}
+                            <input type="checkbox" name="selected-teams" value="{{ team_dict['app-id'] }}" class="input">
+                        </label>
+                        {% endfor %}
+                    </section>
+                </details>
+                {% endfor %}
+            </section>
+            <input class="search-form-element" style="background-color: #EE7674;" type="submit" value="Go!">
+        </form>
+    </div>
+
+    <script>
+        (() => {
+            const accordions = document.querySelectorAll(".accordion");
+            accordions.forEach((accordion) => {
+                accordion.addEventListener("click", (event) => {
+                    const summary = event.target.closest("summary");
+                    if (!summary) return;
+                    const details = summary.closest("details");
+                    if (!details) return;
+                    accordion.querySelectorAll("details").forEach((detailsEl) => {
+                    if (detailsEl !== details) {
+                        detailsEl.removeAttribute("open");
+                    }
+                    });
+                });
+            });
+        })();
+    </script>
+
+
+{% endblock content %}

@@ -14,20 +14,11 @@
         <!-- <div id="some-content">
             Some content
         </div> -->
-        <div id="header">
+        <div id="app-header">
             <a class="app-logo-container" href="/">
                 <img class="app-logo" src="{{ url_for('static', filename='crown-logo.png') }}" />
                 <p class="app-title">fandom</p>
             </a>
-            <div class="app-header-selected-team-logos-wrapper">
-                {% if 'selected-teams' in session %}
-                    {% for team in session['selected-teams'] %}
-                    <a href="/{{ team['league'] }}/team/{{ team['id'] }}/season/2025">
-                        <img class="app-selected-team-icon" src="{{ team['logoURL'] }}"/>
-                    </a>
-                    {% endfor %}
-                {% endif %}
-            </div>
             <a class="app-logout-wrapper" href="/logout">
                 {% if 'username' in session %}
                 <span>Hi, {{ session['username'] }}!</span>
@@ -35,6 +26,17 @@
                 <img class="app-logout-icon" src="{{ url_for('static', filename='logout-icon.png') }}">
             </a>
         </div>
+        {% if 'selected-teams' in session %}
+        <div id="app-subheader">
+            <div class="app-header-selected-team-logos-wrapper">
+                {% for team in session['selected-teams'] %}
+                <a href="/{{ team['league'] }}/team/{{ team['id'] }}/season/2025">
+                    <img class="app-selected-team-icon" src="{{ team['logoURL'] }}"/>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
         <div id="content-container">
             {% block content %}
                 <p>No messages.</p>

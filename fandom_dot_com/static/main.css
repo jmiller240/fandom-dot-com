@@ -10,7 +10,7 @@
     #some-content {
         height: 100%;
     }
-    #header {
+    #app-header {
         flex: 0 1 auto;
         min-height: 10%;
 
@@ -20,6 +20,33 @@
         justify-content: space-between;
         background-color: #6B9AC4;
     }
+    #app-subheader {
+        flex: 0 1 auto;
+        min-height: 5%;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        background-color: #CCCCCC;
+    }
+    .app-header-selected-team-logos-wrapper {
+        margin-right: 10%;
+        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .app-selected-team-icon {
+        height: 1.2em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+    .app-selected-team-icon:hover {
+        opacity: 0.5;
+    }
+
     #content-container {
         flex: 1 1 auto;
 
@@ -59,18 +86,6 @@
     .app-title {
         font-size: 2em;
         color: #ffffff;
-    }
-
-    .app-header-selected-team-logos-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .app-selected-team-icon {
-        height: 1.5em;
-        padding-left: 0.5em;
-        padding-right: 0.5em;
     }
 
     .app-logout-wrapper {

@@ -4,7 +4,7 @@ import pytz
 import pprint
 import pandas as pd
 
-from ..helpers.functions import format_date_from_date, format_time_from_date
+from ..helpers.functions import format_datetime_from_date, format_date_from_date, format_time_from_date
 
 
 NFL_LEAGUE_OBJ = {
@@ -138,6 +138,7 @@ class ESPNAPIService:
                 competition = game['competitions'][0]
 
                 # Game info
+                dt = format_datetime_from_date(game['date'])
                 date = format_date_from_date(game['date'])
                 time = format_time_from_date(game['date'])
                 season_obj = {
@@ -172,6 +173,7 @@ class ESPNAPIService:
 
                 game_dict = {
                     'event_id': event_id,
+                    'datetime': dt,
                     'date': date,
                     'time': time,
                     'league': league_obj,

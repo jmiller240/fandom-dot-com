@@ -1,6 +1,10 @@
 from datetime import datetime
 import pytz
 
+
+def format_datetime_from_date(s: str):
+    return datetime.fromisoformat(s)
+
 def format_date_from_date(s: str):
     dt = datetime.fromisoformat(s)
     

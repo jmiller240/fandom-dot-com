@@ -72,9 +72,6 @@ def get_game_result_url(league: str, event_id: int):
         return f'http://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event={event_id}'
 
 
-def return_home_page():
-    return render_template('home.html', leagues=LEAGUES, teams=TEAMS_OBJ)
-
 def get_team_league(app_id: int) -> str:
     league = TEAMS_DF.loc[TEAMS_DF['app-id'].astype(int) == app_id, 'league'].values[0]
     return league
@@ -111,26 +108,32 @@ ESPNService = ESPNAPIService(teams_df=TEAMS_DF)
 
 ''' Routes '''
 
+def return_team_selection_page():
+    return render_template('team-selection.html', leagues=LEAGUES, teams=TEAMS_OBJ)
+
+
+
 @app.route("/")
 def index():
-    if 'username' in session:
-        username = session['username']
-        if 'selected-teams' in session:
-            # Get teams
-            teams = session['selected-teams']
-
-            # Return first team page
-            team_app_id = int(teams[0]['app-id'])
-            league = get_team_league(app_id=team_app_id)
-            team_id = get_team_id(app_id=team_app_id)
-            league_current_season = ESPNService.get_league_current_season(league=league)
-
-            return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
-
-        else:
-            return render_template('home.html', username=username, leagues=LEAGUES, teams=TEAMS_OBJ)
-    else:
+    if not 'username' in session:
         return render_template('login.html')
+    
+    if not 'selected-teams' in session:
+        return redirect(url_for('team_selection'))
+
+    return redirect(url_for('home'))
+    # # Get teams
+    # teams = session['selected-teams']
+
+    # # Return first team page
+    # team_app_id = int(teams[0]['app-id'])
+    # league = get_team_league(app_id=team_app_id)
+    # team_id = get_team_id(app_id=team_app_id)
+    # league_current_season = ESPNService.get_league_current_season(league=league)
+
+    # return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
+
+
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -145,15 +148,19 @@ def logout():
 
     return redirect(url_for('index'))
 
+
 @app.route("/team-selection", methods=['GET', 'POST'])
 def team_selection():
+    ## Return the page
     if request.method == 'GET':
-        return return_home_page()
+        return return_team_selection_page()
+    
+    ## Process the submission
     elif request.method == 'POST':
         # Get list of teams
         team_ids = request.form.getlist('selected-teams')
         if not team_ids:
-            return return_home_page()
+            return return_team_selection_page()
 
         team_ids = [int(i) for i in team_ids]
 
@@ -171,16 +178,48 @@ def team_selection():
 
         session['selected-teams'] = teams_obj
 
+        return redirect(url_for('home'))
+
         # Return first team page
-        team_app_id = team_ids[0]
+        # # team_app_id = team_ids[0]
         
-        team_app_id = int(team_app_id)
-        league = get_team_league(app_id=team_app_id)
-        team_id = get_team_id(app_id=team_app_id)
+        # # team_app_id = int(team_app_id)
+        # # league = get_team_league(app_id=team_app_id)
+        # # team_id = get_team_id(app_id=team_app_id)
 
-        league_current_season = ESPNService.get_league_current_season(league=league)
+        # # league_current_season = ESPNService.get_league_current_season(league=league)
 
-        return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
+        # return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
+
+@app.route("/home")
+def home():
+    if 'username' not in session:
+        return redirect(url_for('index'))
+    elif 'selected-teams' not in session:
+        return redirect(url_for('team_selection'))
+
+    master_teams_info = []
+    master_games = []
+    for team in session['selected-teams']:
+        # Team variables
+        league = team['league']
+        team_id = team['id']
+        season = ESPNService.get_league_current_season(league=league)
+        
+        # Get team info
+        team_info = ESPNService.get_team_info(league=league, team_id=team_id, season=season)
+
+        # Get schedule
+        games = ESPNService.get_team_schedule(league=league, team_id=team_id, season=season)
+
+        master_teams_info.append(team_info)
+        master_games.extend(games)
+
+    master_games = sorted(master_games, key=lambda game: game['datetime'])
+
+    pprint.pprint(master_games[:5])
+
+    return render_template('home.html', teams_list=master_teams_info, games_list=master_games, season=season)
 
 
 @app.route("/<league>/team/<team_id>/season/<season>")
