@@ -4,7 +4,7 @@ TODO:
  - Arrow next to next game
 '''
 
-from flask import Flask, session, render_template, request, redirect, url_for
+from flask import Flask, session, render_template, request, redirect, url_for, Blueprint
 import os
 import requests
 import pandas as pd
@@ -14,8 +14,8 @@ import json
 import pprint
 
 
-from .helpers.functions import format_date_from_date, format_time_from_date
-from .services.ESPNAPIService import ESPNAPIService
+from ..helpers.functions import format_date_from_date, format_time_from_date
+from ..services.ESPNAPIService import ESPNAPIService
 
 
 ''' Constants '''
@@ -32,7 +32,7 @@ LEAGUES = TEAMS_DF['league'].unique().tolist()
 TEAMS = TEAMS_DF[['app-id', 'league', 'id', 'name', 'logoURL']].to_dict(orient='records')
 
 TEAMS_OBJ = {league: list(filter(lambda x: x['league'] == league, TEAMS)) for league in LEAGUES}
-pprint.pprint(TEAMS_OBJ)
+# pprint.pprint(TEAMS_OBJ)
 
 
 # NFL_LOGO = 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'
@@ -98,12 +98,12 @@ def get_team_logo_url(app_id: int) -> str:
     team_logo_url = TEAMS_DF.loc[TEAMS_DF['app-id'].astype(int) == app_id, 'logoURL'].values[0]
     return team_logo_url
 
-
-
-app = Flask(__name__)
-app.secret_key = 'any random string'
-
 ESPNService = ESPNAPIService(teams_df=TEAMS_DF)
+
+
+# Init blueprint
+core_bp = Blueprint("core", __name__)
+
 
 
 ''' Routes '''
@@ -113,43 +113,7 @@ def return_team_selection_page():
 
 
 
-@app.route("/")
-def index():
-    if not 'username' in session:
-        return render_template('login.html')
-    
-    if not 'selected-teams' in session:
-        return redirect(url_for('team_selection'))
-
-    return redirect(url_for('home'))
-    # # Get teams
-    # teams = session['selected-teams']
-
-    # # Return first team page
-    # team_app_id = int(teams[0]['app-id'])
-    # league = get_team_league(app_id=team_app_id)
-    # team_id = get_team_id(app_id=team_app_id)
-    # league_current_season = ESPNService.get_league_current_season(league=league)
-
-    # return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
-
-
-
-@app.route("/login", methods=['POST'])
-def login():
-    username = request.form['username']
-    session['username'] = username
-    return redirect(url_for('team_selection', _method='GET'))
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    # if 'username' in session:?one)
-
-    return redirect(url_for('index'))
-
-
-@app.route("/team-selection", methods=['GET', 'POST'])
+@core_bp.route("/team-selection", methods=['GET', 'POST'])
 def team_selection():
     ## Return the page
     if request.method == 'GET':
@@ -178,7 +142,7 @@ def team_selection():
 
         session['selected-teams'] = teams_obj
 
-        return redirect(url_for('home'))
+        return redirect(url_for('core.home'))
 
         # Return first team page
         # # team_app_id = team_ids[0]
@@ -191,12 +155,12 @@ def team_selection():
 
         # return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
 
-@app.route("/home")
+@core_bp.route("/home")
 def home():
     if 'username' not in session:
         return redirect(url_for('index'))
     elif 'selected-teams' not in session:
-        return redirect(url_for('team_selection'))
+        return redirect(url_for('core.team_selection'))
 
     master_teams_info = []
     master_games = []
@@ -222,7 +186,7 @@ def home():
     return render_template('home.html', teams_list=master_teams_info, games_list=master_games, season=season)
 
 
-@app.route("/<league>/team/<team_id>/season/<season>")
+@core_bp.route("/<league>/team/<team_id>/season/<season>")
 def team_page(league: str, team_id: int, season: int):
     team_id = int(team_id)
     season = int(season)
@@ -236,7 +200,7 @@ def team_page(league: str, team_id: int, season: int):
     return render_template('team-page.html', team=team_info, games_list=games, season=season, seasons=SEASONS)
 
 
-@app.route("/<league>/boxscore/<event_id>")
+@core_bp.route("/<league>/boxscore/<event_id>")
 def box_score(league: str, event_id: int):
     # Hit API
     game_info = ESPNService.get_game_info(league=league, event_id=event_id)

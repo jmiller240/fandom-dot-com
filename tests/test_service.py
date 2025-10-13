@@ -1,7 +1,7 @@
 import pandas as pd
 import pprint
 
-from fandom_dot_com.services.ESPNAPIService import ESPNAPIService
+from src.services.ESPNAPIService import ESPNAPIService
 
 
 
