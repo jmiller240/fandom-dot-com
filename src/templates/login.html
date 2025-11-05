@@ -3,9 +3,17 @@
 {% block content %}
 <div class="page-container">
 
-    <form class="form card" action="/login" method="POST">
-        <input class="input" type="text" name="username" placeholder="Username">
-    </form>
+    <div class="login-form-wrapper card">
+        <form class="login-form" action="/login" method="POST">
+            <input class="input login-form-item" type="text" name="username" placeholder="Username">
+            <input class="input login-form-item" type="text" name="password" placeholder="Password">
+            <input class="input login-form-item login-submit-button" type="submit" value="Log In">
+        </form>
+        
+        <hr role="separator" />
+    
+        <button class="create-account-button">Create Account</button>
+    </div>
 
 </div>
 {% endblock content %}

@@ -12,7 +12,10 @@
     }
     #app-header {
         flex: 0 1 auto;
-        min-height: 10%;
+        /* min-height: 10%; */
+        min-height: 50px;
+        height: 10%;
+        max-height: 75px;
 
         display: flex;
         flex-direction: row;
@@ -149,6 +152,50 @@
         margin: 10px;
         text-align: center;
     }
+
+    .login-form-wrapper {
+        margin: auto;
+        padding: 1em;
+    }
+    .login-form {
+        min-width: 300px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .login-form-item {
+        margin: 0.5em;
+        height: 3em;
+    }
+    .login-submit-button {
+        /* padding: 0.5em; */
+        width: 100%;
+        
+        color: white;
+        background-color: #EE7674;
+        border-radius: 10px;
+        border: 1px solid #be5e5c;
+    }
+    .login-submit-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .create-account-button {
+        padding: 0.2em;
+        width: 100%;
+        
+        color: white;
+        background-color: #6B9AC4;
+        border-radius: 10px;
+        border: 1px solid #557b9c;
+    }
+    .create-account-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    
 
     .team-selection-container {
         width: 100%;

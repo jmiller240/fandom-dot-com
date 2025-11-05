@@ -5,6 +5,7 @@ TODO:
 '''
 
 from flask import Flask, session, render_template, request, redirect, url_for, Blueprint
+from flask_login import login_required
 import os
 import requests
 import pandas as pd
@@ -13,6 +14,7 @@ import pytz
 import json
 import pprint
 
+from ..database import USERS, User
 
 from ..helpers.functions import format_date_from_date, format_time_from_date
 from ..services.ESPNAPIService import ESPNAPIService
@@ -121,6 +123,7 @@ def return_team_selection_page():
 
 
 @core_bp.route("/team-selection", methods=['GET', 'POST'])
+@login_required
 def team_selection():
     # Redirect to login if not logged in
     if 'username' not in session:
@@ -152,11 +155,13 @@ def team_selection():
             teams_obj.append(d)
 
         session['selected-teams'] = teams_obj
+        
 
         return redirect(url_for('core.home'))
 
 
 @core_bp.route("/home")
+@login_required
 def home():
     if 'username' not in session:
         return redirect(url_for('index'))
