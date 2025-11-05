@@ -4,28 +4,60 @@
         <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
         <title>fandom</title>
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/basecoat.cdn.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/basecoat.cdn.min.css">
         <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
         
-        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/js/basecoat.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.2/dist/js/tabs.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/basecoat.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/dropdown-menu.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/js/tabs.min.js" defer></script>
     </head>
     <body id="base-body">
-        <!-- <div id="some-content">
-            Some content
-        </div> -->
         <div id="app-header">
             <a class="app-logo-container" href="/">
                 <img class="app-logo" src="{{ url_for('static', filename='crown-logo.png') }}" />
                 <p class="app-title">fandom</p>
             </a>
-            <a class="app-logout-wrapper" href="/logout">
-                {% if 'username' in session %}
-                <span>Hi, {{ session['username'] }}!</span>
-                {% endif %}
-                <img class="app-logout-icon" src="{{ url_for('static', filename='logout-icon.png') }}">
-            </a>
+
+            <div class="app-header-account-dropdown-wrapper">
+                <div id="demo-dropdown-menu" class="dropdown-menu">
+                    <button type="button" id="demo-dropdown-menu-trigger" aria-haspopup="menu" aria-controls="demo-dropdown-menu-menu" aria-expanded="false" class="app-header-account-dropdown-button">
+                        {% if 'username' in session %}
+                        Hi, {{ session['username'] }}!
+                        {% else %}
+                        Log in
+                        {% endif %}
+                        <img class="app-header-account-icon" src="{{ url_for('static', filename='account-icon-2.png') }}">
+                    </button>
+                    <div id="demo-dropdown-menu-popover" data-popover aria-hidden="true" class="min-w-56">
+                        <div role="menu" id="demo-dropdown-menu-menu" aria-labelledby="demo-dropdown-menu-trigger">
+                        <div role="group" aria-labelledby="account-options">
+                            <div role="heading" id="account-options">My Account</div>
+                                <div class="app-header-dropdown-item" role="menuitem">
+                                    <a href="/home">Home</a>
+                                </div>
+                                <div class="app-header-dropdown-item" role="menuitem">
+                                    <a href="/team-selection">Team Selection</a>
+                                </div>
+                                <div role="menuitem">
+                                Settings
+                                <span class="text-muted-foreground ml-auto text-xs tracking-widest">⌘S</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr role="separator" />
+                        <div role="menuitem">
+                            <a class="app-header-dropdown-item" href="/logout">
+                                <span>Logout</span>
+                                <img class="app-logout-icon" src="{{ url_for('static', filename='logout-icon.png') }}">
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
         {% if 'selected-teams' in session %}
         <div id="app-subheader">
             <div class="app-header-selected-team-logos-wrapper">

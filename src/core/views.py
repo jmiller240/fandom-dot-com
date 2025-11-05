@@ -27,9 +27,10 @@ from ..services.ESPNAPIService import ESPNAPIService
 # TEAMS_DF['app-id'] = TEAMS_DF.index
 
 TEAMS_DF = pd.read_csv('data/teams_df.csv')
+TEAMS_DF['is-selected-team'] = False
 
 LEAGUES = TEAMS_DF['league'].unique().tolist()
-TEAMS = TEAMS_DF[['app-id', 'league', 'id', 'name', 'logoURL']].to_dict(orient='records')
+TEAMS = TEAMS_DF[['app-id', 'is-selected-team', 'league', 'id', 'name', 'logoURL']].to_dict(orient='records')
 
 TEAMS_OBJ = {league: list(filter(lambda x: x['league'] == league, TEAMS)) for league in LEAGUES}
 # pprint.pprint(TEAMS_OBJ)
@@ -109,12 +110,22 @@ core_bp = Blueprint("core", __name__)
 ''' Routes '''
 
 def return_team_selection_page():
+    if 'selected-teams' in session:
+        for s_team in session['selected-teams']:
+            for teams in TEAMS_OBJ[s_team['league']]:
+                if teams['app-id'] == s_team['app-id']:
+                    teams['is-selected-team'] = True
+
     return render_template('team-selection.html', leagues=LEAGUES, teams=TEAMS_OBJ)
 
 
 
 @core_bp.route("/team-selection", methods=['GET', 'POST'])
 def team_selection():
+    # Redirect to login if not logged in
+    if 'username' not in session:
+        return redirect(url_for('index'))
+    
     ## Return the page
     if request.method == 'GET':
         return return_team_selection_page()
@@ -144,16 +155,6 @@ def team_selection():
 
         return redirect(url_for('core.home'))
 
-        # Return first team page
-        # # team_app_id = team_ids[0]
-        
-        # # team_app_id = int(team_app_id)
-        # # league = get_team_league(app_id=team_app_id)
-        # # team_id = get_team_id(app_id=team_app_id)
-
-        # # league_current_season = ESPNService.get_league_current_season(league=league)
-
-        # return redirect(url_for('team_page', league=league, team_id=team_id, season=league_current_season))
 
 @core_bp.route("/home")
 def home():

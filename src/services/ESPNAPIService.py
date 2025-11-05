@@ -118,13 +118,14 @@ class ESPNAPIService:
 
 
     def get_team_schedule(self, league: str, team_id: int, season: int):
-        print(f'preseason games')
 
         # League
         league_obj = self.get_league_info(league=league)
 
         games = []
         for seasontype in [1,2,3]:
+            print('Season type:', seasontype)
+            
             # Url
             base_url = self._get_site_api_espn_base_url(league=league)
             events_url = f'{base_url}/teams/{team_id}/schedule?season={season}&seasontype={seasontype}'
@@ -134,6 +135,8 @@ class ESPNAPIService:
             print('Games: ', len(events))
             
             for game in events:
+                print(game)
+                print(game['date'])
                 event_id = game['id']
                 competition = game['competitions'][0]
 

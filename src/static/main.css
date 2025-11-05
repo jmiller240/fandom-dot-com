@@ -70,35 +70,58 @@
     }
 
     .app-logo-container {
+        margin-left: 10%;
+        text-decoration: none;
+
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
-        align-items: center;
-        text-decoration: none;
-        /* background-color: #dd3636; */
-        margin-left: 10%;
+        align-items: center;       
+    }
+    .app-logo-container:hover {
+        opacity: 0.5;
     }
     .app-logo {
         height: 3em;
-        /* background-color: #00985f; */
-        /* position: fixed; */
     }
     .app-title {
         font-size: 2em;
         color: #ffffff;
     }
 
-    .app-logout-wrapper {
+    .app-header-account-dropdown-button {
+        color: white;
+        padding: 0.25em;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .app-header-account-icon {
+        padding-left: 5px;
+        height: 1.5em;
+    }
+    .app-header-account-dropdown-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .app-header-account-dropdown-wrapper {
         display: flex;
         flex-direction: row;
         align-items: center;
 
         margin-right: 10%;
-        color: #ffffff;
+    }
+    .app-header-dropdown-item {
+        width: 100%;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
     .app-logout-icon {
-        padding-left: 1em;
-        height: 1.5em;
+        height: 1em;
     }
 
     #title {
@@ -127,11 +150,97 @@
         text-align: center;
     }
 
+    .team-selection-container {
+        width: 100%;
+        height: 100%;
+        margin-top: 5px;
+        background-color: gold;
+    }
+    .team-selection-header {
+        font-size: 2em;
+        width: 100%;
+        padding: 0.5em;
+    }
     .team-selection-card {
-        margin-top: auto;
+        width: 100%;
+        height: 100%;
+        /* margin-top: auto;
         margin-bottom: auto;
         margin-left: 10%;
-        margin-right: 10%;
+        margin-right: 10%; */
+    }
+
+    .team-selection-tabs-wrapper {
+        width: 100%;
+        background-color: white;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .team-selection-tab {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        margin-left: 5%;
+        margin-right: 5%;
+        
+        background-color: white;
+        box-shadow: none;
+        border-radius: 0px;
+    }
+    .team-selection-tab:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .team-selection-tab[aria-selected="true"] {
+        border-bottom: 2px solid #323232;
+        font-weight: bold;
+        /* background-color: #b8b8b8; */
+    }
+    .team-selection-teams-container {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .team-selection-tile {
+        padding: 2em;
+    }
+    .team-selection-tile-logo {
+        height: 3em;
+    }
+    .team-selection-tile-checkbox[type="checkbox"] {
+        width: 2em;
+        height: 2em;
+    }
+    .team-selection-tile-checkbox[type="checkbox"].custom-checkbox:checked + label::before {
+        content: "\2714"; /* Unicode tick symbol */
+        font-size: 5em; /* Adjust this value to change the checkmark size */
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the tick */
+    }
+    .team-selection-submit-button {
+        /* width: 100%; */
+        padding: 0.5em;
+        margin-left: auto;
+        margin-right: auto;
+        min-width: 33%;
+
+        color: white;
+        background-color: #EE7674;
+        border-radius: 10px;
+        border: 1px solid #be5e5c;
+    }
+    .team-selection-submit-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
     }
 
     .page-container {
@@ -145,7 +254,7 @@
     }
 
     .page-header {
-        margin-top: 2em;
+        margin-top: 0.5em;
         margin-bottom: 0.5em;
         margin-left: 10%;
         margin-right: 10%;
@@ -164,10 +273,19 @@
     }
     .page-content {
         margin-top: 0.5em;
-        margin-bottom: 2em;
+        margin-bottom: 0.5em;
         margin-left: 10%;
         margin-right: 10%;
         
+        display: flex;
+        flex-direction: row;
+    }
+    .page-footer {
+        margin-left: 10%;
+        margin-right: 10%;
+        margin-top: 0.5em;
+        margin-bottom: 2em;
+
         display: flex;
         flex-direction: row;
     }
@@ -207,6 +325,9 @@
     }
     .team-header-logo {
         height: 4em;
+    }
+    .team-header-logo:hover {
+        opacity: 0.5;
     }
     .team-page-name-wrapper {
         display: flex;
