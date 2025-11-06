@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-container">
+
+    <div class="login-form-wrapper card">
+        <form class="login-form" action="/register" method="POST">
+            <input class="input login-form-item" type="text" name="username" placeholder="Username">
+            <input class="input login-form-item" type="text" name="name" placeholder="Name">
+            <input class="input login-form-item" type="password" name="password" placeholder="Password">
+            <input class="input login-form-item" type="password" name="confirm-password" placeholder="Confirm Password">
+            <input class="input login-form-item login-submit-button" type="submit" value="Create Account">
+        </form>
+        
+        <hr role="separator" />
+    
+        <a href="/login"><button class="create-account-button">Log In</button></a>
+    </div>
+
+</div>
+{% endblock content %}

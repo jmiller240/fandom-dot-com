@@ -1,0 +1,20 @@
+{
+    "1": {
+        "id": 1,
+        "username": "horse",
+        "password": "horseman",
+        "name": "Horsey"
+    },
+    "2": {
+        "id": 2,
+        "username": "neigh",
+        "password": "neighman",
+        "name": "Joe"
+    },
+    "3": {
+        "id": 3,
+        "username": "pony",
+        "password": "ponyboy",
+        "name": "Phil"
+    }
+}

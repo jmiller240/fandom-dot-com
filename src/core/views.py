@@ -14,7 +14,7 @@ import pytz
 import json
 import pprint
 
-from ..database import USERS, User
+# from ..database import USERS, User
 
 from ..helpers.functions import format_date_from_date, format_time_from_date
 from ..services.ESPNAPIService import ESPNAPIService
@@ -121,13 +121,23 @@ def return_team_selection_page():
     return render_template('team-selection.html', leagues=LEAGUES, teams=TEAMS_OBJ)
 
 
+@core_bp.route("/")
+def index():
+    if not 'username' in session:
+        return redirect(url_for('accounts.login'))
+    
+    if not 'selected-teams' in session:
+        return redirect(url_for('core.team_selection'))
+
+    return redirect(url_for('core.home'))
+
 
 @core_bp.route("/team-selection", methods=['GET', 'POST'])
 @login_required
 def team_selection():
     # Redirect to login if not logged in
     if 'username' not in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('core.index'))
     
     ## Return the page
     if request.method == 'GET':
@@ -164,7 +174,7 @@ def team_selection():
 @login_required
 def home():
     if 'username' not in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('core.index'))
     elif 'selected-teams' not in session:
         return redirect(url_for('core.team_selection'))
 
