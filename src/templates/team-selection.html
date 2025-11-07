@@ -10,7 +10,7 @@
                         Team Selection
                     </header>
                     <nav role="tablist" aria-orientation="horizontal" class=" team-selection-tabs-wrapper">
-                        {% for league, teams_list in teams.items() %}
+                        {% for league in leagues %}
                         {% if loop.index == 1 %}
                         <button class="team-selection-tab" type="button" role="tab" id="team-selection-tab-{{league}}" aria-controls="team-selection-panel-{{league}}" aria-selected="true" tabindex="0">
                         {% else %}
@@ -38,10 +38,10 @@
                                 <div class="team-selection-tile">
                                     <label class="label gap-3">
                                         <img class="team-selection-tile-logo" src="{{ team_dict['logoURL'] }}"/>
-                                        {% if team_dict['is-selected-team'] %}
-                                        <input type="checkbox" name="selected-teams" value="{{ team_dict['app-id'] }}" class="input team-selection-tile-checkbox" checked>
+                                        {% if team_dict['appID'] in selected_team_ids %}
+                                        <input type="checkbox" name="selected-teams" value="{{ team_dict['appID'] }}" class="input team-selection-tile-checkbox" checked>
                                         {% else %}
-                                        <input type="checkbox" name="selected-teams" value="{{ team_dict['app-id'] }}" class="input team-selection-tile-checkbox">
+                                        <input type="checkbox" name="selected-teams" value="{{ team_dict['appID'] }}" class="input team-selection-tile-checkbox">
                                         {% endif %}
                                     </label>
                                 </div>

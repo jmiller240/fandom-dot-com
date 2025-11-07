@@ -14,7 +14,7 @@ def create_app():
 
     ## App ##
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///C:/Users/jack.miller/Documents/Personal/fandom-dot-com/fandom_db.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///C:/Users/jack.miller/Documents/Personal/fandom-dot-com/fandom_db3.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = 'any random string'
 
@@ -24,7 +24,9 @@ def create_app():
 
     # Init Login Manager
     login_manager.init_app(app)
-    login_manager.login_view = "login"
+    login_manager.login_view = "accounts.login"
+    login_manager.login_message = "Please log in to access this page."
+    login_manager.login_message_category = "error"
 
     @login_manager.user_loader
     def load_user(user_id):

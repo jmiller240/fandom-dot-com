@@ -5,7 +5,7 @@ TODO:
 '''
 
 from flask import Flask, session, render_template, request, redirect, url_for, Blueprint
-from flask_login import login_required
+from flask_login import login_required, current_user
 import os
 import requests
 import pandas as pd
@@ -15,6 +15,8 @@ import json
 import pprint
 
 # from ..database import USERS, User
+from src.models import Team, Account
+from src.extensions import db
 
 from ..helpers.functions import format_date_from_date, format_time_from_date
 from ..services.ESPNAPIService import ESPNAPIService
@@ -26,13 +28,13 @@ from ..services.ESPNAPIService import ESPNAPIService
 # nfl_teams = pd.read_csv('data/nfl_team_info.csv')
 # nba_teams = pd.read_csv('data/nba_team_info.csv')
 # TEAMS_DF = pd.concat([nfl_teams, nba_teams]).reset_index(drop=True)
-# TEAMS_DF['app-id'] = TEAMS_DF.index
+# TEAMS_DF['appID'] = TEAMS_DF.index
 
 TEAMS_DF = pd.read_csv('data/teams_df.csv')
 TEAMS_DF['is-selected-team'] = False
 
 LEAGUES = TEAMS_DF['league'].unique().tolist()
-TEAMS = TEAMS_DF[['app-id', 'is-selected-team', 'league', 'id', 'name', 'logoURL']].to_dict(orient='records')
+TEAMS = TEAMS_DF[['appID', 'is-selected-team', 'league', 'id', 'name', 'logoURL']].to_dict(orient='records')
 
 TEAMS_OBJ = {league: list(filter(lambda x: x['league'] == league, TEAMS)) for league in LEAGUES}
 # pprint.pprint(TEAMS_OBJ)
@@ -76,15 +78,15 @@ def get_game_result_url(league: str, event_id: int):
 
 
 def get_team_league(app_id: int) -> str:
-    league = TEAMS_DF.loc[TEAMS_DF['app-id'].astype(int) == app_id, 'league'].values[0]
+    league = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'league'].values[0]
     return league
 
 def get_team_id(app_id: int) -> int:
-    i = TEAMS_DF.loc[TEAMS_DF['app-id'].astype(int) == app_id, 'id'].values[0]
+    i = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'id'].values[0]
     return int(i)
 
 def get_team_name(app_id: int) -> str:
-    name = TEAMS_DF.loc[TEAMS_DF['app-id'].astype(int) == app_id, 'name'].values[0]
+    name = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'name'].values[0]
     return name
 
 # def get_team_name(league: str, id: int):
@@ -98,7 +100,7 @@ def get_team_full_name(league: str, id: int):
     return full_name
 
 def get_team_logo_url(app_id: int) -> str:
-    team_logo_url = TEAMS_DF.loc[TEAMS_DF['app-id'].astype(int) == app_id, 'logoURL'].values[0]
+    team_logo_url = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'logoURL'].values[0]
     return team_logo_url
 
 ESPNService = ESPNAPIService(teams_df=TEAMS_DF)
@@ -111,61 +113,90 @@ core_bp = Blueprint("core", __name__)
 
 ''' Routes '''
 
-def return_team_selection_page():
-    if 'selected-teams' in session:
-        for s_team in session['selected-teams']:
-            for teams in TEAMS_OBJ[s_team['league']]:
-                if teams['app-id'] == s_team['app-id']:
-                    teams['is-selected-team'] = True
-
-    return render_template('team-selection.html', leagues=LEAGUES, teams=TEAMS_OBJ)
-
-
 @core_bp.route("/")
 def index():
-    if not 'username' in session:
+    if not current_user.is_authenticated:
         return redirect(url_for('accounts.login'))
     
-    if not 'selected-teams' in session:
+    if not current_user.teams:
         return redirect(url_for('core.team_selection'))
 
     return redirect(url_for('core.home'))
 
 
+def return_team_selection_page(selected_team_ids: list = []):
+    # Get leagues
+    leagues = db.session.query(Team.league).distinct().all()
+    leagues = [i[0] for i in leagues]
+
+    # Get teams
+    all_teams = Team.query.all()
+    teams_ob = {}
+    for league in leagues:
+        league_teams = [t for t in all_teams if t.league == league]
+        print(league_teams)
+
+        teams_ob[league] = league_teams
+
+    return render_template('team-selection.html', leagues=leagues, teams=teams_ob, selected_team_ids=selected_team_ids)
+
 @core_bp.route("/team-selection", methods=['GET', 'POST'])
 @login_required
 def team_selection():
-    # Redirect to login if not logged in
-    if 'username' not in session:
-        return redirect(url_for('core.index'))
-    
+    # Get user teams from DB (if any)
+    user_teams: list[Team] = current_user.teams
+    user_team_ids = [t.appID for t in user_teams]
+
     ## Return the page
     if request.method == 'GET':
-        return return_team_selection_page()
+        return return_team_selection_page(user_team_ids)
     
     ## Process the submission
     elif request.method == 'POST':
-        # Get list of teams
-        team_ids = request.form.getlist('selected-teams')
-        if not team_ids:
-            return return_team_selection_page()
+        # Get selected teams from form
+        form_team_ids = request.form.getlist('selected-teams')
+        if not form_team_ids:
+            return return_team_selection_page(user_team_ids)
 
-        team_ids = [int(i) for i in team_ids]
-
-        # Store them in session
+        # Process selections
+        form_team_ids = [int(i) for i in form_team_ids]      
+        
         teams_obj = []
-        for i in team_ids:
+        for i in form_team_ids:
+            print(f'team {i}')
+            
+            # Get info from DB
+            t: Team = Team.query.filter_by(appID=i).first()
+
             d = {
-                'app-id': i,
-                'id': get_team_id(i),
-                'name': get_team_name(i),
-                'league': get_team_league(i),
-                'logoURL': get_team_logo_url(i)
+                'appID': i,
+                'id': t.id,
+                'name': t.name,
+                'league': t.league,
+                'logoURL': t.logoURL
             }
             teams_obj.append(d)
 
+            # Insert to DB
+            if i in user_team_ids:
+                print(f'Ignoring {t.appID}, already added.')
+                continue
+            else:
+                print(f'Adding {t.appID}.')   
+                current_user.teams.append(t)
+                db.session.commit()
+            
         session['selected-teams'] = teams_obj
-        
+
+        # Remove any *unselected* teams
+        for i in user_team_ids:
+            if i not in form_team_ids:
+                # Get info from DB
+                t: Team = Team.query.filter_by(appID=i).first()
+
+                print(f'Removing {t.appID}')
+                current_user.teams.remove(t)
+                db.session.commit()
 
         return redirect(url_for('core.home'))
 
@@ -173,17 +204,18 @@ def team_selection():
 @core_bp.route("/home")
 @login_required
 def home():
-    if 'username' not in session:
-        return redirect(url_for('core.index'))
-    elif 'selected-teams' not in session:
+    # Get user teams
+    user_teams: list[Team] = current_user.teams
+    if not user_teams:
         return redirect(url_for('core.team_selection'))
 
+    # Get games
     master_teams_info = []
     master_games = []
-    for team in session['selected-teams']:
+    for team in user_teams:
         # Team variables
-        league = team['league']
-        team_id = team['id']
+        league = team.league  
+        team_id = team.id 
         season = ESPNService.get_league_current_season(league=league)
         
         # Get team info

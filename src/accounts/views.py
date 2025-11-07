@@ -3,7 +3,7 @@ from flask import flash, Blueprint, request, redirect, render_template, url_for,
 from flask_login import login_required, login_user, logout_user   
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from src.models import Account
+from src.models import Account, Team
 from src.extensions import db
 
 accounts_bp = Blueprint('accounts', __name__)
@@ -21,12 +21,12 @@ def register():
 
         if password != confirm_password:
             print(f'Passwords don\'t match!')
-            flash(f'Passwords don\'t match!')
+            flash(f'Passwords don\'t match!', 'error')
             return render_template('register.html')
         
         if Account.query.filter_by(username=username).first():
             print(f'Username already taken')
-            flash(f'Username already taken')
+            flash(message=f'Username already taken.', category='error')
             return render_template('register.html')
 
         hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
@@ -36,8 +36,8 @@ def register():
         db.session.commit()
 
         print(f'Successfully registered. You can now log in.')
-        flash(f'Successfully registered. You can now log in.')
-        return redirect(url_for("core.login"))
+        flash(f'Successfully registered. You can now log in.', category='success')
+        return redirect(url_for("accounts.login"))
 
 
 @accounts_bp.route("/login", methods=['GET', 'POST'])
@@ -49,21 +49,45 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
         
-        user = Account.query.filter_by(username=username).first()
+        user: Account = Account.query.filter_by(username=username).first()
         print(user)
 
         if user and check_password_hash(user.password, password):       # and check_password_hash(user.password, password):
-            print(user)
+            print('User:', user)
 
             login_user(user)
             session['username'] = username
+            flash("Successfully logged in.", category='success')
 
-            flash("Successfully logged in.", "success")
-            return redirect(url_for('core.team_selection', _method='GET'))
+            # user_teams: list[Team] = user.teams
+            # if user_teams:
+
+            #     # Store teams in session
+            #     teams_obj = []
+            #     for team in user_teams:
+            #         d = {
+            #             'appID': team.appID,
+            #             'id': team.id,
+            #             'name': team.name,
+            #             'league': team.league,
+            #             'logoURL': team.logoURL
+            #         }
+            #         teams_obj.append(d)
+
+            #     session['selected-teams'] = teams_obj
+
+            # next_page = request.args.get('next')
+            # if next_page:
+            #     return redirect(next_page or url_for('accounts.login'))
+            if user.teams:
+                return redirect(url_for('core.home'))
+
+            else:        
+                return redirect(url_for('core.team_selection', _method='GET'))
 
         else:
             print('wrong password')
-            flash('Invalid username or password', 'danger')
+            flash('Invalid username or password', category='error')
             return render_template("login.html")
 
     
@@ -72,6 +96,6 @@ def login():
 def logout():
     session.clear()
     logout_user()
-    flash("Successfully logged out.", "success")
+    flash("Successfully logged out.", category='success')
 
     return redirect(url_for('core.index'))

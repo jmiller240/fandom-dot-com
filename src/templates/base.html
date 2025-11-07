@@ -30,27 +30,38 @@
                     </button>
                     <div id="demo-dropdown-menu-popover" data-popover aria-hidden="true" class="min-w-56">
                         <div role="menu" id="demo-dropdown-menu-menu" aria-labelledby="demo-dropdown-menu-trigger">
-                        <div role="group" aria-labelledby="account-options">
-                            <div role="heading" id="account-options">My Account</div>
-                                <div class="app-header-dropdown-item" role="menuitem">
-                                    <a href="/home">Home</a>
-                                </div>
-                                <div class="app-header-dropdown-item" role="menuitem">
-                                    <a href="/team-selection">Team Selection</a>
-                                </div>
-                                <div role="menuitem">
-                                Settings
-                                <span class="text-muted-foreground ml-auto text-xs tracking-widest">⌘S</span>
+                            {% if current_user.is_authenticated %}
+                            <div role="group" aria-labelledby="account-options">
+                                <div role="heading" id="account-options">My Account</div>
+                                    <div class="app-header-dropdown-item" role="menuitem">
+                                        <a href="/home">Home</a>
+                                    </div>
+                                    <div class="app-header-dropdown-item" role="menuitem">
+                                        <a href="/team-selection">Team Selection</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <hr role="separator" />
-                        <div role="menuitem">
-                            <a class="app-header-dropdown-item" href="/logout">
-                                <span>Logout</span>
-                                <img class="app-logout-icon" src="{{ url_for('static', filename='logout-icon.png') }}">
-                            </a>
-                        </div>
+                            <hr role="separator" />
+                            
+                            <div role="menuitem">
+                                <a class="app-header-dropdown-item" href="/logout">
+                                    <span>Logout</span>
+                                    <img class="app-logout-icon" src="{{ url_for('static', filename='logout-icon.png') }}">
+                                </a>
+                            </div>
+                            {% else %}
+                            <div role="menuitem">
+                                <a class="app-header-dropdown-item" href="/login">
+                                    <span>Log In</span>
+                                </a>
+                            </div>
+                            <hr role="separator" />
+                            <div role="menuitem">
+                                <a class="app-header-dropdown-item" href="/register">
+                                    <span>Create Account</span>
+                                </a>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -58,10 +69,10 @@
 
         </div>
 
-        {% if 'selected-teams' in session %}
+        {% if current_user.teams %}
         <div id="app-subheader">
             <div class="app-header-selected-team-logos-wrapper">
-                {% for team in session['selected-teams'] %}
+                {% for team in current_user.teams %}
                 <a href="/{{ team['league'] }}/team/{{ team['id'] }}/season/2025">
                     <img class="app-selected-team-icon" src="{{ team['logoURL'] }}"/>
                 </a>
@@ -69,12 +80,26 @@
             </div>
         </div>
         {% endif %}
-        <div id="content-container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div id="flash-wrapper">
+                <ul>
+                {% for category, message in messages %}
+                    <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        <div id="app-content">
             {% block content %}
                 <p>No messages.</p>
             {% endblock content %}
         </div>
-        <div id="footer">
+
+        <div id="app-footer">
             <div>(C) Jack Miller 2025</div>
         </div>
     </body>
