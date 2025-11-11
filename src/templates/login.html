@@ -5,8 +5,26 @@
 
     <div class="login-form-wrapper card">
         <form class="login-form" action="/login" method="POST">
-            <input class="input login-form-item" type="text" name="username" placeholder="Username">
-            <input class="input login-form-item" type="password" name="password" placeholder="Password">
+            {{ form.username(class="input login-form-item", placeholder="Username") }}
+            {% if form.username.errors %}
+            <ul class="form-error">
+                {% for error in form.username.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
+            {{ form.password(class="input login-form-item", placeholder="Password") }}
+            {% if form.password.errors %}
+            <ul class="form-error">
+                {% for error in form.password.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <!-- <input class="input login-form-item" type="text" name="username" placeholder="Username">
+            <input class="input login-form-item" type="password" name="password" placeholder="Password"> -->
             <input class="input login-form-item login-submit-button" type="submit" value="Log In">
         </form>
         

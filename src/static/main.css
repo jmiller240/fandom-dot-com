@@ -206,6 +206,14 @@
         opacity: 0.5;
         cursor: pointer;
     }
+    .form-error {
+        padding-left: 1.5em;
+        font-size: 0.8em;
+        color: #FC100D;
+        list-style-type: disc;
+        text-align: left;
+        align-items: left;
+    }
     
 
     .team-selection-container {

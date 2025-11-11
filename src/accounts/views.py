@@ -5,19 +5,22 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from src.models import Account, Team
 from src.extensions import db
+from src.forms import RegistrationForm, LoginForm
 
 accounts_bp = Blueprint('accounts', __name__)
 
 
 @accounts_bp.route("/register", methods=['GET', 'POST'])
 def register():
-    if request.method == 'GET':
-        return render_template('register.html')
-    else:
-        username = request.form.get("username")
-        name = request.form.get("name")
-        password = request.form.get("password")
-        confirm_password = request.form.get("confirm-password")
+    # if request.method == 'GET':
+    #     return render_template('register.html')
+    
+    form = RegistrationForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data #request.form.get("username")
+        name = form.name.data #request.form.get("name")
+        password = form.password.data #request.form.get("password")
+        confirm_password = form.confirm_password.data #request.form.get("confirm-password")
 
         if password != confirm_password:
             print(f'Passwords don\'t match!')
@@ -27,7 +30,7 @@ def register():
         if Account.query.filter_by(username=username).first():
             print(f'Username already taken')
             flash(message=f'Username already taken.', category='error')
-            return render_template('register.html')
+            return render_template('register.html', form=form)
 
         hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
 
@@ -39,15 +42,18 @@ def register():
         flash(f'Successfully registered. You can now log in.', category='success')
         return redirect(url_for("accounts.login"))
 
+    return render_template('register.html', form=form)
 
 @accounts_bp.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
+    # if request.method == 'GET':
+    #     return render_template('login.html')
+    # else:
 
-    else:
-        username = request.form.get("username")
-        password = request.form.get("password")
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data #request.form.get("username")
+        password = form.password.data #request.form.get("password")
         
         user: Account = Account.query.filter_by(username=username).first()
         print(user)
@@ -88,7 +94,9 @@ def login():
         else:
             print('wrong password')
             flash('Invalid username or password', category='error')
-            return render_template("login.html")
+            return render_template("login.html", form=form)
+    
+    return render_template('login.html', form=form)
 
     
 @accounts_bp.route("/logout")
