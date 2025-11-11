@@ -118,8 +118,8 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('accounts.login'))
     
-    if not current_user.teams:
-        return redirect(url_for('core.team_selection'))
+    # if not current_user.teams:
+    #     return redirect(url_for('core.team_selection'))
 
     return redirect(url_for('core.home'))
 
@@ -206,12 +206,13 @@ def team_selection():
 def home():
     # Get user teams
     user_teams: list[Team] = current_user.teams
-    if not user_teams:
-        return redirect(url_for('core.team_selection'))
+    # if not user_teams:
+    #     return redirect(url_for('core.team_selection'))
 
     # Get games
     master_teams_info = []
     master_games = []
+    season = None
     for team in user_teams:
         # Team variables
         league = team.league  

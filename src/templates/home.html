@@ -4,6 +4,7 @@
     <div class="page-container">
         <div class="page-header">
             <header class="team-page-header">
+                {% if teams_list %}
                 {% for team in teams_list %}
                 <div class="team-page-header-logo-wrapper">
                     <a href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ team['league']['current-season'] }}">
@@ -11,6 +12,11 @@
                     </a>
                 </div>
                 {% endfor %}
+                {% else %}
+                <div>
+                    No teams yet
+                </div>
+                {% endif %}
             </header>
         </div>
 
@@ -72,5 +78,6 @@
             </div>
         </div>
 
+    </div>
 
 {% endblock content %}

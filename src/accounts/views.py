@@ -25,7 +25,7 @@ def register():
         if password != confirm_password:
             print(f'Passwords don\'t match!')
             flash(f'Passwords don\'t match!', 'error')
-            return render_template('register.html')
+            return render_template('register.html', form=form)
         
         if Account.query.filter_by(username=username).first():
             print(f'Username already taken')
@@ -38,9 +38,10 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        print(f'Successfully registered. You can now log in.')
-        flash(f'Successfully registered. You can now log in.', category='success')
-        return redirect(url_for("accounts.login"))
+        login_user(new_user)
+        print(f'Successfully registered.')
+        flash(f'Successfully registered.', category='success')
+        return redirect(url_for("core.team_selection"))
 
     return render_template('register.html', form=form)
 
@@ -85,11 +86,11 @@ def login():
             # next_page = request.args.get('next')
             # if next_page:
             #     return redirect(next_page or url_for('accounts.login'))
-            if user.teams:
-                return redirect(url_for('core.home'))
+            # if user.teams:
+            return redirect(url_for('core.home'))
 
-            else:        
-                return redirect(url_for('core.team_selection', _method='GET'))
+            # else:        
+            #     return redirect(url_for('core.team_selection', _method='GET'))
 
         else:
             print('wrong password')

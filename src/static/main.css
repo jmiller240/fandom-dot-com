@@ -71,7 +71,7 @@
     #flash-wrapper {
         background-color: transparent;
         text-align: center;
-        size: 0.8em;
+        font-size: 0.8em;
     }
     .flash-error {
         color: red;
@@ -194,7 +194,7 @@
         cursor: pointer;
     }
     .create-account-button {
-        padding: 0.2em;
+        padding: 0.5em;
         width: 100%;
         
         color: white;
@@ -394,6 +394,7 @@
     }
     .team-header-logo:hover {
         opacity: 0.5;
+        cursor: pointer;
     }
     .team-page-name-wrapper {
         display: flex;
