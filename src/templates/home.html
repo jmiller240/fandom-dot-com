@@ -7,8 +7,8 @@
                 {% if teams_list %}
                 {% for team in teams_list %}
                 <div class="team-page-header-logo-wrapper">
-                    <a href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ team['league']['current-season'] }}">
-                        <img class="team-header-logo" src="{{ team['logo-url'] }}"/>
+                    <a href="/{{ team['league']['name'] }}/team/{{ team['espn_id'] }}/season/{{ team['league']['current_season'] }}">
+                        <img class="team-header-logo" src="{{ team['logo_url'] }}"/>
                     </a>
                 </div>
                 {% endfor %}

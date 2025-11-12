@@ -14,97 +14,21 @@ import pytz
 import json
 import pprint
 
-# from ..database import USERS, User
-from src.models import Team, Account
+from src.models import League, Team, Account
 from src.extensions import db
 
 from ..helpers.functions import format_date_from_date, format_time_from_date
 from ..services.ESPNAPIService import ESPNAPIService
-
+from ..services.DatabaseService import DatabaseService
 
 ''' Constants '''
-
-
-# nfl_teams = pd.read_csv('data/nfl_team_info.csv')
-# nba_teams = pd.read_csv('data/nba_team_info.csv')
-# TEAMS_DF = pd.concat([nfl_teams, nba_teams]).reset_index(drop=True)
-# TEAMS_DF['appID'] = TEAMS_DF.index
-
-TEAMS_DF = pd.read_csv('data/teams_df.csv')
-TEAMS_DF['is-selected-team'] = False
-
-LEAGUES = TEAMS_DF['league'].unique().tolist()
-TEAMS = TEAMS_DF[['appID', 'is-selected-team', 'league', 'id', 'name', 'logoURL']].to_dict(orient='records')
-
-TEAMS_OBJ = {league: list(filter(lambda x: x['league'] == league, TEAMS)) for league in LEAGUES}
-# pprint.pprint(TEAMS_OBJ)
-
-
-# NFL_LOGO = 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'
-
-NFL_LEAGUE_OBJ = {
-    'name': 'NFL',
-    'logo-url': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'
-}
-NBA_LEAGUE_OBJ = {
-    'name': 'NBA',
-    'logo-url': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png'
-}
 
 SEASONS = [i for i in range(2018, 2025)]
 DEFAULT_SEASON = 2025
 
 
-''' Helpers '''
-
-def get_team_info_url(league: str, team_id: int):
-    if league == 'NFL':
-        return f'https://partners.api.espn.com/v2/sports/football/nfl/teams/{team_id}'
-    else:
-        return f'https://partners.api.espn.com/v2/sports/basketball/nba/teams/{team_id}'
-
-def get_team_schedule_url(league: str, team_id: int):
-    if league == 'NFL':
-        return f'https://partners.api.espn.com/v2/sports/football/nfl/teams/{team_id}/events?season=2025&limit=1000'
-        # return f'http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/11/schedule?season=2025'
-    else:
-        return f'https://partners.api.espn.com/v2/sports/basketball/nba/teams/{team_id}/events?season=2025&limit=1000'
-
-def get_game_result_url(league: str, event_id: int):
-    if league == 'NFL':
-        return f'http://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event={event_id}'
-    else:
-        return f'http://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event={event_id}'
-
-
-def get_team_league(app_id: int) -> str:
-    league = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'league'].values[0]
-    return league
-
-def get_team_id(app_id: int) -> int:
-    i = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'id'].values[0]
-    return int(i)
-
-def get_team_name(app_id: int) -> str:
-    name = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'name'].values[0]
-    return name
-
-# def get_team_name(league: str, id: int):
-#     name = TEAMS_DF.loc[(TEAMS_DF['league'] == league) & 
-#                         (TEAMS_DF['id'].astype(int) == id), 'name'].values[0]
-#     return name
-
-def get_team_full_name(league: str, id: int):
-    full_name = TEAMS_DF.loc[(TEAMS_DF['league'] == league) & 
-                             (TEAMS_DF['id'].astype(int) == id), 'displayName'].values[0]
-    return full_name
-
-def get_team_logo_url(app_id: int) -> str:
-    team_logo_url = TEAMS_DF.loc[TEAMS_DF['appID'].astype(int) == app_id, 'logoURL'].values[0]
-    return team_logo_url
-
-ESPNService = ESPNAPIService(teams_df=TEAMS_DF)
-
+ESPNService = ESPNAPIService()
+DBService = DatabaseService()
 
 # Init blueprint
 core_bp = Blueprint("core", __name__)
@@ -125,27 +49,27 @@ def index():
 
 
 def return_team_selection_page(selected_team_ids: list = []):
-    # Get leagues
-    leagues = db.session.query(Team.league).distinct().all()
-    leagues = [i[0] for i in leagues]
-
-    # Get teams
-    all_teams = Team.query.all()
+    # Get leagues and teams
+    all_leagues = DBService.get_leagues()
+    league_names = [league.name for league in all_leagues]
+    
+    # Format to dict of league / team list pairs
     teams_ob = {}
-    for league in leagues:
-        league_teams = [t for t in all_teams if t.league == league]
-        print(league_teams)
+    for league in all_leagues:
+        league_teams: list[Team] = league.teams
+        league_teams = [{'id': team.id, 'name': team.name, 'logo_url': team.logo_url} for team in league_teams]
 
-        teams_ob[league] = league_teams
+        teams_ob[league.name] = league_teams
 
-    return render_template('team-selection.html', leagues=leagues, teams=teams_ob, selected_team_ids=selected_team_ids)
+    return render_template('team-selection.html', league_names=league_names, teams=teams_ob, selected_team_ids=selected_team_ids)
+
 
 @core_bp.route("/team-selection", methods=['GET', 'POST'])
 @login_required
 def team_selection():
     # Get user teams from DB (if any)
     user_teams: list[Team] = current_user.teams
-    user_team_ids = [t.appID for t in user_teams]
+    user_team_ids = [t.id for t in user_teams]
 
     ## Return the page
     if request.method == 'GET':
@@ -158,47 +82,65 @@ def team_selection():
         if not form_team_ids:
             return return_team_selection_page(user_team_ids)
 
-        # Process selections
+        ## Process selections ##
         form_team_ids = [int(i) for i in form_team_ids]      
         
-        teams_obj = []
+        # Add new teams to DB
         for i in form_team_ids:
             print(f'team {i}')
             
             # Get info from DB
-            t: Team = Team.query.filter_by(appID=i).first()
-
-            d = {
-                'appID': i,
-                'id': t.id,
-                'name': t.name,
-                'league': t.league,
-                'logoURL': t.logoURL
-            }
-            teams_obj.append(d)
+            # t: Team = Team.query.filter_by(id=i).first()
+            t = DBService.get_team(id=i)
 
             # Insert to DB
             if i in user_team_ids:
-                print(f'Ignoring {t.appID}, already added.')
+                print(f'Ignoring {t.id}, already added.')
                 continue
             else:
-                print(f'Adding {t.appID}.')   
+                print(f'Adding {t.id}.')   
                 current_user.teams.append(t)
                 db.session.commit()
             
-        session['selected-teams'] = teams_obj
-
         # Remove any *unselected* teams
         for i in user_team_ids:
             if i not in form_team_ids:
                 # Get info from DB
-                t: Team = Team.query.filter_by(appID=i).first()
+                # t: Team = Team.query.filter_by(id=i).first()
+                t = DBService.get_team(id=i)
 
-                print(f'Removing {t.appID}')
+                print(f'Removing {t.id}')
                 current_user.teams.remove(t)
                 db.session.commit()
 
         return redirect(url_for('core.home'))
+
+
+def get_team_info(team: Team):
+    # Team info
+    team_info = {
+        'espn_id': team.espn_team_id,
+        'name': team.name,
+        'display_name': team.display_name,
+        'logo_url': team.logo_url
+    }
+
+    # League info
+    league: League = team.league #DBService.get_league(team.league_id)
+    league_info = {
+        'espn_id': league.espn_league_id,
+        'name': league.name,
+        'logo_url': league.logo_url,
+        'current_season': league.current_season,
+        'current_season_type': league.current_season_type
+    }
+    team_info['league'] = league_info
+
+    # Record
+    team_record = ESPNService.get_team_record(league=league.name, team_id=team.espn_team_id, season=league.current_season)
+    team_info['record'] = team_record
+
+    return team_info
 
 
 @core_bp.route("/home")
@@ -212,25 +154,30 @@ def home():
     # Get games
     master_teams_info = []
     master_games = []
-    season = None
+    season = DEFAULT_SEASON
+
     for team in user_teams:
-        # Team variables
-        league = team.league  
-        team_id = team.id 
-        season = ESPNService.get_league_current_season(league=league)
-        
+        print(team)
+
+        # League
+        # season = ESPNService.get_league_current_season(league=league)
+        # league_obj = ESPNService.get_league_info(league=league)
+        # season = int(league_obj['season']['year'])
+
         # Get team info
-        team_info = ESPNService.get_team_info(league=league, team_id=team_id, season=season)
+        # team_info = ESPNService.get_team_info(league=league_name, team_id=espn_team_id, season=current_season)
+        team_info = get_team_info(team=team)
+        league = DBService.get_league(team.league_id)
 
         # Get schedule
-        games = ESPNService.get_team_schedule(league=league, team_id=team_id, season=season)
+        games = ESPNService.get_team_schedule(league=league.name, team_id=team.espn_team_id, season=league.current_season)
 
         master_teams_info.append(team_info)
         master_games.extend(games)
 
     master_games = sorted(master_games, key=lambda game: game['datetime'])
 
-    pprint.pprint(master_games[:5])
+    # pprint.pprint(master_games[:5])
 
     return render_template('home.html', teams_list=master_teams_info, games_list=master_games, season=season)
 
@@ -240,8 +187,13 @@ def team_page(league: str, team_id: int, season: int):
     team_id = int(team_id)
     season = int(season)
 
-    ## Get team info
-    team_info = ESPNService.get_team_info(league=league, team_id=team_id, season=season)
+    ## Query DB
+    league_obj: League = League.query.filter_by(name=league).first()
+    team = Team.query.filter_by(espn_team_id=team_id, league_id=league_obj.id).first()
+
+    ## Format team info
+    # team_info = ESPNService.get_team_info(league=league, team_id=team_id, season=season)
+    team_info = get_team_info(team=team)
 
     ## Get schedule
     games = ESPNService.get_team_schedule(league=league, team_id=team_id, season=season)

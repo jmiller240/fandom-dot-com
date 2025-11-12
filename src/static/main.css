@@ -4,6 +4,7 @@
     body {
         /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        color: #323232;
         display: flex;
         flex-direction: column;
         background-color: #fafafa;
@@ -562,9 +563,7 @@
         text-align: center;
 
         padding: 0.5em;
-        border-radius: 15px;
-        color: black;
-        
+        border-radius: 15px;        
     }
     .game-card-away-team-container {
         display: flex;

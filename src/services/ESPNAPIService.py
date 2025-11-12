@@ -1,3 +1,7 @@
+
+from flask import session
+
+
 import requests
 from datetime import datetime
 import pytz
@@ -23,9 +27,11 @@ NBA_LEAGUE_OBJ = {
 
 class ESPNAPIService:
 
-    def __init__(self, teams_df: pd.DataFrame):
-        self.teams_df: pd.DataFrame = teams_df
-    
+    def __init__(self):
+        # self.league_objects = {}
+        # self.team_objects = {}
+        pass
+
     def _get_site_api_espn_base_url(self, league):
         if league == 'NFL':
             return 'http://site.api.espn.com/apis/site/v2/sports/football/nfl'
@@ -62,48 +68,48 @@ class ESPNAPIService:
         elif league == 'PREM':
             return 'https://partners.api.espn.com/v2/sports/soccer/eng.1'
 
-    def get_league_current_season(self, league: str) -> int:
-        base_url = self._get_sports_core_api_espn_base_url(league=league)
-        response = requests.get(base_url).json()
+    def _api_call(self, url: str):
+        print(f' ---------------------- API CALL ----------------------')
+        print(url)
+        return requests.get(url).json()
 
-        return int(response['season']['year'])
+    def get_league_current_season(self, league: str) -> int:
+        league_info = self.get_league_info(league=league)
+        return int(league_info['current-season'])
 
     def get_league_info(self, league: str):
-        base_url = self._get_sports_core_api_espn_base_url(league=league)
-        response = requests.get(base_url).json()
+        if 'leagues' not in session:
+            session['leagues'] = {}
 
-        league_info = {
-            'id': response['id'],
-            'name': league,
-            'logo-url': response['logos'][0]['href'],
-            'current-season': response['season']['year'],
-            'current-season-type': response['season']['type']['type']
-        }
-        return league_info
+        # Try to pull from cache
+        if league in session['leagues']:
+            return session['leagues'][league]
+        
+        else:
+            # If not, pull from API and cache
+            base_url = self._get_sports_core_api_espn_base_url(league=league)
+            response = self._api_call(base_url)
 
-    def get_team_info(self, league: str, team_id: int, season: int):
+            league_info = {
+                'id': response['id'],
+                'name': league,
+                'logo-url': response['logos'][0]['href'],
+                'current-season': response['season']['year'],
+                'current-season-type': response['season']['type']['type']
+            }
+
+            # Cache object
+            session['leagues'][league] = league_info
+            
+            return league_info
+
+    def get_team_record(self, league: str, team_id: int, season: int):
         # Hit API
-        base_url = self._get_site_api_espn_base_url(league=league)
-        info_url = f'{base_url}/teams/{team_id}'
-        response = requests.get(info_url).json()
-
-        # Put it all together
-        team_obj = {
-            'id': team_id,
-            'name': response['team']['name'],
-            'full-name': response['team']['displayName'],
-            'logo-url': response['team']['logos'][0]['href']
-        }
-
-        # Get league info
-        league_obj = self.get_league_info(league=league)
-        team_obj['league'] = league_obj
-
-        # Get record
         base_url = self.get_partners_api_espn_base_url(league=league)
         info_url = f'{base_url}/teams/{team_id}?season={season}'
-        response = requests.get(info_url).json()
+        response = self._api_call(info_url)
 
+        # Process records
         record_obj = {}
         for record in response['team']['record']:
             record_name = record['name']
@@ -111,10 +117,54 @@ class ESPNAPIService:
 
             record_obj[record_name] = record_value
 
-        team_obj['record'] = record_obj
+        return record_obj
+    
+    def get_team_info(self, league: str, team_id: int, season: int):
+        if 'teams' not in session:
+            session['teams'] = {}
+        
+        # if team_id in self.team_objects.keys():
+        s_team_id = str(team_id)
+        if s_team_id in session['teams']:
+            return session['teams'][s_team_id]
 
+        else:
+            # Hit API
+            base_url = self._get_site_api_espn_base_url(league=league)
+            info_url = f'{base_url}/teams/{team_id}'
+            response = self._api_call(info_url)
 
-        return team_obj
+            # Put it all together
+            team_obj = {
+                'id': team_id,
+                'name': response['team']['name'],
+                'full-name': response['team']['displayName'],
+                'logo-url': response['team']['logos'][0]['href']
+            }
+
+            # Get league info
+            league_obj = self.get_league_info(league=league)
+            team_obj['league'] = league_obj
+
+            # Get record
+            base_url = self.get_partners_api_espn_base_url(league=league)
+            info_url = f'{base_url}/teams/{team_id}?season={season}'
+            response = self._api_call(info_url)
+
+            record_obj = {}
+            for record in response['team']['record']:
+                record_name = record['name']
+                record_value = record['displayValue']
+
+                record_obj[record_name] = record_value
+
+            team_obj['record'] = record_obj
+
+            # Cache object
+            # self.team_objects[league] = team_obj
+            session['teams'][team_id] = team_obj
+
+            return team_obj
 
 
     def get_team_schedule(self, league: str, team_id: int, season: int):
@@ -130,13 +180,11 @@ class ESPNAPIService:
             base_url = self._get_site_api_espn_base_url(league=league)
             events_url = f'{base_url}/teams/{team_id}/schedule?season={season}&seasontype={seasontype}'
             
-            response = requests.get(events_url)
-            events = response.json()['events']
+            response = self._api_call(events_url)
+            events = response['events']
             print('Games: ', len(events))
             
             for game in events:
-                print(game)
-                print(game['date'])
                 event_id = game['id']
                 competition = game['competitions'][0]
 
@@ -201,7 +249,7 @@ class ESPNAPIService:
         ## Hit API
         base_url = self._get_site_api_espn_base_url(league=league)
         event_url = f'{base_url}/summary?event={event_id}'
-        response = requests.get(event_url).json()
+        response = self._api_call(event_url)
 
         ## General game info
         
@@ -223,7 +271,7 @@ class ESPNAPIService:
         start_time = format_time_from_date(competition['date'])
         venue = response['gameInfo']['venue']['fullName']
         city = response['gameInfo']['venue']['address']['city']
-        state = response['gameInfo']['venue']['address']['state']
+        state = response['gameInfo']['venue']['address']['state'] if 'state' in response['gameInfo']['venue']['address'].keys() else ''
         
         attendance = response['gameInfo']['attendance'] if game_completed else 0
         game_winner = None

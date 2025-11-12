@@ -6,10 +6,10 @@
         <div class="page-header">
             <header class="team-page-header">
                 <div class="team-page-header-logo-wrapper">
-                    <img class="team-header-logo" src="{{ team['logo-url'] }}"/>
+                    <img class="team-header-logo" src="{{ team['logo_url'] }}"/>
                 </div>
                 <div class="team-page-name-wrapper">
-                    <span class="team-header-name">{{ team['full-name'] }}</span>
+                    <span class="team-header-name">{{ team['display_name'] }}</span>
                     <span class="team-header-league">{{ team['league']['name'] }}</span>
                 </div>
             </header>
@@ -17,14 +17,14 @@
         <div class="team-page-content">
             <div class="team-page-games-container">
                 <div class="team-page-games-header">
-                    <a class="nav-icon-wrapper flex-align-left" href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ season - 1}}">
+                    <a class="nav-icon-wrapper flex-align-left" href="/{{ team['league']['name'] }}/team/{{ team['espn_id'] }}/season/{{ season - 1}}">
                         <img class="nav-icon" src="{{ url_for('static', filename='back-icon.png') }}">
                     </a>
                     <div class="team-page-games-header-season-wrapper">
                         <span class="team-page-games-header-schedule">Schedule</span>
                         <span>{{ season }}</span>
                     </div>
-                    <a class="nav-icon-wrapper flex-align-right" href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ season + 1}}">
+                    <a class="nav-icon-wrapper flex-align-right" href="/{{ team['league']['name'] }}/team/{{ team['espn_id'] }}/season/{{ season + 1}}">
                         <img class="nav-icon" src="{{ url_for('static', filename='next-icon.png') }}">
                     </a>
                 </div>
