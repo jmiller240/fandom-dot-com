@@ -1,25 +1,19 @@
 '''
-TODO:
- - Show results
- - Arrow next to next game
+Jack Miller
+Nov 2025
 '''
 
-from flask import Flask, session, render_template, request, redirect, url_for, Blueprint
+from flask import render_template, request, redirect, url_for, Blueprint
 from flask_login import login_required, current_user
-import os
-import requests
-import pandas as pd
-from datetime import datetime
-import pytz
-import json
 import pprint
 
-from src.models import League, Team, Account
+from src.models import League, Team
 from src.extensions import db
 
-from ..helpers.functions import format_date_from_date, format_time_from_date
 from ..services.ESPNAPIService import ESPNAPIService
 from ..services.DatabaseService import DatabaseService
+
+
 
 ''' Constants '''
 
@@ -42,9 +36,6 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('accounts.login'))
     
-    # if not current_user.teams:
-    #     return redirect(url_for('core.team_selection'))
-
     return redirect(url_for('core.home'))
 
 
@@ -116,7 +107,7 @@ def team_selection():
         return redirect(url_for('core.home'))
 
 
-def get_team_info(team: Team):
+def get_team_info(team: Team, season: int):
     # Team info
     team_info = {
         'espn_id': team.espn_team_id,
@@ -126,7 +117,7 @@ def get_team_info(team: Team):
     }
 
     # League info
-    league: League = team.league #DBService.get_league(team.league_id)
+    league: League = team.league
     league_info = {
         'espn_id': league.espn_league_id,
         'name': league.name,
@@ -137,7 +128,7 @@ def get_team_info(team: Team):
     team_info['league'] = league_info
 
     # Record
-    team_record = ESPNService.get_team_record(league=league.name, team_id=team.espn_team_id, season=league.current_season)
+    team_record = ESPNService.get_team_record(league=league.name, team_id=team.espn_team_id, season=season)
     team_info['record'] = team_record
 
     return team_info
@@ -148,29 +139,25 @@ def get_team_info(team: Team):
 def home():
     # Get user teams
     user_teams: list[Team] = current_user.teams
-    # if not user_teams:
-    #     return redirect(url_for('core.team_selection'))
+
+    # Season
+    season = None
+    if 'season' in request.args and request.args.get('season').isnumeric():
+        season = int(request.args.get('season'))
+    else:
+        season = DEFAULT_SEASON
 
     # Get games
     master_teams_info = []
     master_games = []
-    season = DEFAULT_SEASON
 
     for team in user_teams:
-        print(team)
-
-        # League
-        # season = ESPNService.get_league_current_season(league=league)
-        # league_obj = ESPNService.get_league_info(league=league)
-        # season = int(league_obj['season']['year'])
-
         # Get team info
-        # team_info = ESPNService.get_team_info(league=league_name, team_id=espn_team_id, season=current_season)
-        team_info = get_team_info(team=team)
+        team_info = get_team_info(team=team, season=season)
         league = DBService.get_league(team.league_id)
 
         # Get schedule
-        games = ESPNService.get_team_schedule(league=league.name, team_id=team.espn_team_id, season=league.current_season)
+        games = ESPNService.get_team_schedule(league=league.name, team_id=team.espn_team_id, season=season)
 
         master_teams_info.append(team_info)
         master_games.extend(games)
@@ -192,8 +179,7 @@ def team_page(league: str, team_id: int, season: int):
     team = Team.query.filter_by(espn_team_id=team_id, league_id=league_obj.id).first()
 
     ## Format team info
-    # team_info = ESPNService.get_team_info(league=league, team_id=team_id, season=season)
-    team_info = get_team_info(team=team)
+    team_info = get_team_info(team=team, season=season)
 
     ## Get schedule
     games = ESPNService.get_team_schedule(league=league, team_id=team_id, season=season)

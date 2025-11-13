@@ -1,26 +1,34 @@
+'''
+Jack Miller
+Nov 2025
+'''
+
 
 from flask import flash, Blueprint, request, redirect, render_template, url_for, session
 from flask_login import login_required, login_user, logout_user   
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from src.models import Account, Team
+from src.models import Account
 from src.extensions import db
 from src.forms import RegistrationForm, LoginForm
+
+
+''' Blueprint '''
 
 accounts_bp = Blueprint('accounts', __name__)
 
 
+''' Routes'''
+
 @accounts_bp.route("/register", methods=['GET', 'POST'])
 def register():
-    # if request.method == 'GET':
-    #     return render_template('register.html')
     
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
-        username = form.username.data #request.form.get("username")
-        name = form.name.data #request.form.get("name")
-        password = form.password.data #request.form.get("password")
-        confirm_password = form.confirm_password.data #request.form.get("confirm-password")
+        username = form.username.data
+        name = form.name.data
+        password = form.password.data
+        confirm_password = form.confirm_password.data
 
         if password != confirm_password:
             print(f'Passwords don\'t match!')
@@ -47,14 +55,11 @@ def register():
 
 @accounts_bp.route("/login", methods=['GET', 'POST'])
 def login():
-    # if request.method == 'GET':
-    #     return render_template('login.html')
-    # else:
 
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        username = form.username.data #request.form.get("username")
-        password = form.password.data #request.form.get("password")
+        username = form.username.data
+        password = form.password.data
         
         user: Account = Account.query.filter_by(username=username).first()
         print(user)
@@ -66,31 +71,7 @@ def login():
             session['username'] = username
             flash("Successfully logged in.", category='success')
 
-            # user_teams: list[Team] = user.teams
-            # if user_teams:
-
-            #     # Store teams in session
-            #     teams_obj = []
-            #     for team in user_teams:
-            #         d = {
-            #             'appID': team.appID,
-            #             'id': team.id,
-            #             'name': team.name,
-            #             'league': team.league,
-            #             'logoURL': team.logoURL
-            #         }
-            #         teams_obj.append(d)
-
-            #     session['selected-teams'] = teams_obj
-
-            # next_page = request.args.get('next')
-            # if next_page:
-            #     return redirect(next_page or url_for('accounts.login'))
-            # if user.teams:
             return redirect(url_for('core.home'))
-
-            # else:        
-            #     return redirect(url_for('core.team_selection', _method='GET'))
 
         else:
             print('wrong password')

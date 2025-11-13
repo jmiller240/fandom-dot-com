@@ -1,10 +1,7 @@
 
 
 from sqlalchemy import Column, String, Integer, ForeignKey, Table
-from sqlalchemy.orm import declarative_base
-
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash
 
 from src.extensions import db
 

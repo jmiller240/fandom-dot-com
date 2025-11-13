@@ -357,10 +357,14 @@
         flex-direction: row;
     }
 
-    .card {
+    .app-card {
         background-color: #ffffff;
         border: 1px solid #f0f0f0;
         border-radius: 15px;
+        
+        align-items: center;
+        text-align: center;
+        padding: 1em;
     }
 
     .team-page-container {
@@ -429,6 +433,7 @@
         /* flex: 1 1 auto; */
         display: flex;
         flex-direction: row;
+        /* grid-template-columns: ; */
         /* justify-content: space-between; */
         /* align-items: flex-start; */
         /* align-items: center; */
@@ -452,6 +457,8 @@
         /* min-width: 33%; */
         margin-left: 0.5em;
         flex: 1 1 auto;
+        max-width: 400px;
+
         /* margin: auto; */
         display: flex;
         flex-direction: column;
@@ -459,9 +466,6 @@
         /* background-color: #dd3636; */
     }
     .team-page-record-card {
-        background-color: #ffffff;
-        border: 1px solid #f0f0f0;
-        border-radius: 15px;
         /* display: grid; */
         /* flex: 1 1 auto; */
         /* margin: auto; */
@@ -774,11 +778,13 @@
         padding: 5px;
     }
     .nav-icon-wrapper:hover {
-        background-color: #b8b8b8;
-        border-radius: 15px;
+        opacity: 0.5;
+        cursor: pointer;
+        /* background-color: #b8b8b8;
+        border-radius: 15px; */
     }
     .nav-icon {
-        height: 2em;
+        /* height: 2em; */
         width: 2em;
     }
 

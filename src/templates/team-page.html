@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- <div id="content-section"> -->
     <div class="page-container">
         <div class="page-header">
             <header class="team-page-header">
@@ -39,7 +38,6 @@
                         </div>
                     </div>
                     <div class="game-card-result">
-                        <!-- <div id="away-team" class="game-card-away-team-container {{ 'winner' if game['winner'] == 'away' else '' }}"> -->
                         <div id="away-team" class="game-card-away-team-container">
                             <p class="game-card-team-name">{{ game['away-team'] }}</p>
                             <img class="team-logo-detail" src="{{ game['away-team-logo'] }}"/>
@@ -57,7 +55,6 @@
                             </span>
                         </div>
                         {% endif %}
-                        <!-- <div id="home-team" class="game-card-home-team-container {{ 'winner' if game['winner'] == 'home' else '' }}"> -->
                         <div id="home-team" class="game-card-home-team-container">
                             <img class="team-logo-detail" src="{{ game['home-team-logo'] }}"/>
                             <p class="game-card-team-name">{{ game['home-team'] }}</p>
@@ -67,8 +64,7 @@
                 {% endfor %}
             </div>
             <div class="team-page-info-container">
-                <div class="team-page-record-card">
-                    <!-- <p class="team-page-record-header">Record</p> -->
+                <div class="app-card team-page-record-card">
                     <table class="table team-page-record-table">
                         <thead>
                             <tr>
@@ -89,5 +85,4 @@
             </div>
         </div>
     </div>
-<!-- </div> -->
 {% endblock content %}
