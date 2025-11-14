@@ -2,17 +2,21 @@
         height: 100%;
     }
     body {
-        /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        color: #323232;
         display: flex;
         flex-direction: column;
         background-color: #fafafa;
+        padding-top: 115px;
     }
 
     #app-header {
-        flex: 0 0 auto;
-        /* min-height: 10%; */
+        position: fixed;
+        top: 0; left: 0;
         height: 75px;
+        width: 100%;
+
+        flex: 0 0 auto;
 
         display: flex;
         flex-direction: row;
@@ -21,8 +25,14 @@
         background-color: #6B9AC4;
     }
     #app-subheader {
+        position: fixed;
+        top: 75px; left: 0;
+        width: 100%;
+        height: 40px;
+
+        box-shadow: 0px 3px 5px -5px rgba(0, 0, 0, 0.5);
+
         flex: 0 0 auto;
-        height: 50px;
 
         display: flex;
         flex-direction: row;
@@ -71,7 +81,7 @@
     #flash-wrapper {
         background-color: transparent;
         text-align: center;
-        size: 0.8em;
+        font-size: 0.8em;
     }
     .flash-error {
         color: red;
@@ -194,7 +204,7 @@
         cursor: pointer;
     }
     .create-account-button {
-        padding: 0.2em;
+        padding: 0.5em;
         width: 100%;
         
         color: white;
@@ -205,6 +215,14 @@
     .create-account-button:hover {
         opacity: 0.5;
         cursor: pointer;
+    }
+    .form-error {
+        padding-left: 1.5em;
+        font-size: 0.8em;
+        color: #FC100D;
+        list-style-type: disc;
+        text-align: left;
+        align-items: left;
     }
     
 
@@ -336,8 +354,17 @@
         margin-right: 10%;
         
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        /* flex-direction: row; */
     }
+    /* Styles for screens with a minimum width of 768px (for tablets and desktops) */
+    @media only screen and (min-width: 768px) {
+        .page-content {
+            flex-direction: row; /* Switch to row for larger screens */
+            /* gap: 20px; */
+        }
+    }
+
     .page-footer {
         margin-left: 10%;
         margin-right: 10%;
@@ -348,10 +375,14 @@
         flex-direction: row;
     }
 
-    .card {
+    .app-card {
         background-color: #ffffff;
         border: 1px solid #f0f0f0;
         border-radius: 15px;
+        
+        align-items: center;
+        text-align: center;
+        padding: 1em;
     }
 
     .team-page-container {
@@ -386,6 +417,7 @@
     }
     .team-header-logo:hover {
         opacity: 0.5;
+        cursor: pointer;
     }
     .team-page-name-wrapper {
         display: flex;
@@ -419,6 +451,7 @@
         /* flex: 1 1 auto; */
         display: flex;
         flex-direction: row;
+        /* grid-template-columns: ; */
         /* justify-content: space-between; */
         /* align-items: flex-start; */
         /* align-items: center; */
@@ -442,6 +475,8 @@
         /* min-width: 33%; */
         margin-left: 0.5em;
         flex: 1 1 auto;
+        max-width: 400px;
+
         /* margin: auto; */
         display: flex;
         flex-direction: column;
@@ -449,9 +484,6 @@
         /* background-color: #dd3636; */
     }
     .team-page-record-card {
-        background-color: #ffffff;
-        border: 1px solid #f0f0f0;
-        border-radius: 15px;
         /* display: grid; */
         /* flex: 1 1 auto; */
         /* margin: auto; */
@@ -553,9 +585,7 @@
         text-align: center;
 
         padding: 0.5em;
-        border-radius: 15px;
-        color: black;
-        
+        border-radius: 15px;        
     }
     .game-card-away-team-container {
         display: flex;
@@ -766,11 +796,13 @@
         padding: 5px;
     }
     .nav-icon-wrapper:hover {
-        background-color: #b8b8b8;
-        border-radius: 15px;
+        opacity: 0.5;
+        cursor: pointer;
+        /* background-color: #b8b8b8;
+        border-radius: 15px; */
     }
     .nav-icon {
-        height: 2em;
+        /* height: 2em; */
         width: 2em;
     }
 

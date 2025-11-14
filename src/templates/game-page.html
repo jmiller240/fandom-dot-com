@@ -30,7 +30,7 @@
                                     {{ game_info['away-team']['name'] }}
                                 </span>
                                 <div class="team-logo-wrapper-left">
-                                    <img src="{{ game_info['away-team']['logo_url'] }}" class="team-logo-header"/> <!--src="{{ team_logo_url }}"/> -->
+                                    <img src="{{ game_info['away-team']['logo_url'] }}" class="team-logo-header"/>
                                 </div>
                             </div>
                         </a>
@@ -56,7 +56,7 @@
                         <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['home-team']['id'] }}/season/{{ game_info['season']['year'] }}">
                             <div class="team-name-wrapper">
                                 <div class="team-logo-wrapper-right">
-                                    <img src="{{ game_info['home-team']['logo_url'] }}" class="team-logo-header"/> <!--src="{{ team_logo_url }}"/> -->
+                                    <img src="{{ game_info['home-team']['logo_url'] }}" class="team-logo-header"/>
                                 </div>
                                 <span class="team-name-header">
                                     {{ game_info['home-team']['name'] }}
@@ -74,11 +74,6 @@
                                 {% for period in game_info['home-team']['score'].keys() %}
                                 <th>{{ period }}</th>
                                 {% endfor%}
-                                <!-- <th>Q1</th>
-                                <th>Q2</th>
-                                <th>Q3</th>
-                                <th>Q4</th>
-                                <th>Total</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -87,22 +82,12 @@
                                 {% for score in game_info['away-team']['score'].values() %}
                                 <th>{{ score }}</th>
                                 {% endfor%}
-                                <!-- <th>{{ game_info['away-team']['score']['Q1'] }}</th>
-                                <th>{{ game_info['away-team']['score']['Q2'] }}</th>
-                                <th>{{ game_info['away-team']['score']['Q3'] }}</th>
-                                <th>{{ game_info['away-team']['score']['Q4'] }}</th>
-                                <th>{{ game_info['away-team']['score']['Total'] }}</th> -->
                             </tr>
                             <tr>
                                 <th>{{ game_info['home-team']['name']}}</th>
                                 {% for score in game_info['home-team']['score'].values() %}
                                 <th>{{ score }}</th>
                                 {% endfor%}
-                                <!-- <th>{{ game_info['home-team']['score']['Q1'] }}</th>
-                                <th>{{ game_info['home-team']['score']['Q2'] }}</th>
-                                <th>{{ game_info['home-team']['score']['Q3'] }}</th>
-                                <th>{{ game_info['home-team']['score']['Q4'] }}</th>
-                                <th>{{ game_info['home-team']['score']['Total'] }}</th> -->
                             </tr>
                         </tbody>
                     </table>
@@ -112,8 +97,8 @@
             
         </div>
         <div class="page-content">
-            <div class="card">
-                something
+            <div class="app-card">
+                Coming soon...
             </div>
         </div>
     </div>

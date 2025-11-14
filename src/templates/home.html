@@ -4,27 +4,33 @@
     <div class="page-container">
         <div class="page-header">
             <header class="team-page-header">
+                {% if teams_list %}
                 {% for team in teams_list %}
                 <div class="team-page-header-logo-wrapper">
-                    <a href="/{{ team['league']['name'] }}/team/{{ team['id'] }}/season/{{ team['league']['current-season'] }}">
-                        <img class="team-header-logo" src="{{ team['logo-url'] }}"/>
+                    <a href="/{{ team['league']['name'] }}/team/{{ team['espn_id'] }}/season/{{ season }}">
+                        <img class="team-header-logo" src="{{ team['logo_url'] }}"/>
                     </a>
                 </div>
                 {% endfor %}
+                {% else %}
+                <div>
+                    No teams yet
+                </div>
+                {% endif %}
             </header>
         </div>
 
-        <div class="team-page-content">
+        <div class="page-content">
             <div class="team-page-games-container">
                 <div class="team-page-games-header">
-                    <a class="nav-icon-wrapper flex-align-left" href="/home">
+                    <a class="nav-icon-wrapper flex-align-left" href="/home?season={{ season - 1 }}">
                         <img class="nav-icon" src="{{ url_for('static', filename='back-icon.png') }}">
                     </a>
                     <div class="team-page-games-header-season-wrapper">
                         <span class="team-page-games-header-schedule">Schedule</span>
                         <span>{{ season }}</span>
                     </div>
-                    <a class="nav-icon-wrapper flex-align-right" href="/home">
+                    <a class="nav-icon-wrapper flex-align-right" href="/home?season={{ season + 1 }}">
                         <img class="nav-icon" src="{{ url_for('static', filename='next-icon.png') }}">
                     </a>
                 </div>
@@ -39,7 +45,6 @@
                         </div>
                     </div>
                     <div class="game-card-result">
-                        <!-- <div id="away-team" class="game-card-away-team-container {{ 'winner' if game['winner'] == 'away' else '' }}"> -->
                         <div id="away-team" class="game-card-away-team-container">
                             <p class="game-card-team-name">{{ game['away-team'] }}</p>
                             <img class="team-logo-detail" src="{{ game['away-team-logo'] }}"/>
@@ -57,7 +62,6 @@
                             </span>
                         </div>
                         {% endif %}
-                        <!-- <div id="home-team" class="game-card-home-team-container {{ 'winner' if game['winner'] == 'home' else '' }}"> -->
                         <div id="home-team" class="game-card-home-team-container">
                             <img class="team-logo-detail" src="{{ game['home-team-logo'] }}"/>
                             <p class="game-card-team-name">{{ game['home-team'] }}</p>
@@ -68,9 +72,12 @@
             </div>
 
             <div class="team-page-info-container">
-                Record
+                <div class="app-card">
+                    Nothing to see just yet
+                </div>
             </div>
         </div>
 
+    </div>
 
 {% endblock content %}

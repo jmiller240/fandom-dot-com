@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>fandom</title>
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.3/dist/basecoat.cdn.min.css">
@@ -73,8 +73,8 @@
         <div id="app-subheader">
             <div class="app-header-selected-team-logos-wrapper">
                 {% for team in current_user.teams %}
-                <a href="/{{ team['league'] }}/team/{{ team['id'] }}/season/2025">
-                    <img class="app-selected-team-icon" src="{{ team['logoURL'] }}"/>
+                <a href="/{{ team['league']['name'] }}/team/{{ team['espn_team_id'] }}/season/{{ team['league']['current_season'] }}">
+                    <img class="app-selected-team-icon" src="{{ team['logo_url'] }}"/>
                 </a>
                 {% endfor %}
             </div>

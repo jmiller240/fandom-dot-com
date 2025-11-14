@@ -1,10 +1,7 @@
 
 
 from sqlalchemy import Column, String, Integer, ForeignKey, Table
-from sqlalchemy.orm import declarative_base
-
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash
 
 from src.extensions import db
 
@@ -28,7 +25,7 @@ account_team_m2m = Table(
     "account_teams",
     db.metadata,
     Column("account_id", Integer, ForeignKey("account.id"), primary_key=True),
-    Column("team_id", Integer, ForeignKey("team.appID"), primary_key=True),
+    Column("team_id", Integer, ForeignKey("team.id"), primary_key=True),
 )
 
 ## Models ##
@@ -41,43 +38,45 @@ class Account(BaseModel, UserMixin):
     name = Column(String)
 
     # relationships
-    # teams = db.relationship('AccountTeams', lazy=True) # backref='author',
-    teams = db.relationship('Team', secondary=account_team_m2m, backref='accounts', lazy=True)
+    teams = db.relationship('Team', secondary=account_team_m2m, backref='account', lazy=True)
 
     def __repr__(self):
         return f"<Account(id={self.id}, name='{self.name}', email='{self.username}')>"
 
-# class AccountTeams(BaseModel):
-#     __tablename__ = "account_teams"
 
-#     id = Column(Integer, primary_key=True)
-#     account_id = Column(Integer, ForeignKey('account.id'))
-#     team_id = Column(Integer, ForeignKey('team.appID'))
+class League(BaseModel):
+    __tablename__ = "league"
 
-#     def __repr__(self):
-#         return f"<AccountTeam(user_id={self.account_id}, team='{self.team_id}')>"
+    id = Column(Integer, primary_key=True)
+    espn_league_id = Column(Integer)
+    name = Column(String)
+    logo_url = Column(String)
+    current_season = Column(String)
+    current_season_type = Column(String)
+
+    # relationships
+    teams = db.relationship('Team', backref='league', lazy=True)
+
+    def __repr__(self):
+        return f"<League(id={self.id}, name='{self.name}', season='{self.current_season}')>"
 
 
 class Team(BaseModel):
     __tablename__ = "team"
 
-    id = Column(Integer)
-    displayName = Column(String)
+    id = Column(Integer, primary_key=True)
+    espn_team_id = Column(Integer)
+    display_name = Column(String)
     location = Column(String)
     name = Column(String)
-    shortDisplayName = Column(String)
+    short_display_name = Column(String)
     abbreviation = Column(String)
     color = Column(String)
-    alternateColor = Column(String)
-    logoURL = Column(String)
-    league = Column(String)
-    appID = Column(String, primary_key=True)
+    alternate_color = Column(String)
+    logo_url = Column(String)
+    league_id = Column(Integer, ForeignKey("league.id"))
 
-    # relationships
-    # accounts = db.relationship('AccountTeams', lazy=True)
-    
     def __repr__(self):
-        return f"<Team(appID={self.appID}, name='{self.name}', name='{self.league}', name='{self.id}')>"
-
+        return f"<Team(id={self.id}, name='{self.name}', league='{self.league_id}', espn_id='{self.espn_team_id}')>"
 
 
