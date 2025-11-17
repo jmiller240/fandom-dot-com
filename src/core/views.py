@@ -175,9 +175,12 @@ def team_page(league: str, team_id: int, season: int):
     season = int(season)
 
     ## Query DB
+    print('League', league)
     league_obj: League = League.query.filter_by(name=league).first()
+    print(league_obj)
     team = Team.query.filter_by(espn_team_id=team_id, league_id=league_obj.id).first()
-
+    print(team)
+    
     ## Format team info
     team_info = get_team_info(team=team, season=season)
 

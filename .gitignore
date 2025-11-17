@@ -1,6 +1,7 @@
 ## Folders
 .conda
 *pycache*
+aws/
 
 ## Files
 notes.txt
@@ -8,3 +9,4 @@ notes.txt
 
 *.DS_STORE
 *.db
+*.pem

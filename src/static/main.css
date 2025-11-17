@@ -135,6 +135,7 @@
         align-items: center;
 
         margin-right: 10%;
+        z-index: 99;
     }
     .app-header-dropdown-item {
         width: 100%;

@@ -9,9 +9,9 @@ def format_date_from_date(s: str):
     dt = datetime.fromisoformat(s)
     
     if dt.year != datetime.today().year:
-        fmt_str = '%b %#d, %Y'
+        fmt_str = '%b %-d, %Y'
     else:
-        fmt_str = '%a, %b %#d'
+        fmt_str = '%a, %b %-d'
 
     date = datetime.strftime(dt, fmt_str)
 
@@ -26,5 +26,5 @@ def format_time_from_date(s: str):
     # 3. Convert the datetime object to the target timezone
     central_datetime = dt.astimezone(central_timezone)
     
-    time = central_datetime.strftime("%#I:%M %p")
+    time = central_datetime.strftime("%-I:%M %p")
     return time

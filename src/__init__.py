@@ -10,11 +10,22 @@ from src.accounts.views import accounts_bp
 from src.core.views import core_bp
 
 
+''' Database '''
+db_host = 'fandomdbinstance.cil0ke6w208h.us-east-1.rds.amazonaws.com'
+db_name = 'fandomdb'
+db_user = 'fandomdbadmin'
+db_pass = 'myteamdb5'
+
+
+DATABASE_URL = f"postgresql://{db_user}:{db_pass}@{db_host}:5432/{db_name}"
+
+
 def create_app():
 
     ## App ##
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///C:/Users/jack.miller/Documents/Personal/fandom-dot-com/fandom_db.db"
+    # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///C:/Users/jack.miller/Documents/Personal/fandom-dot-com/fandom_db.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = 'any random string'
 

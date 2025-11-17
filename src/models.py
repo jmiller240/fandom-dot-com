@@ -22,15 +22,17 @@ class BaseModel(db.Model):
 
 # Define the association table (bridge table)
 account_team_m2m = Table(
-    "account_teams",
+    "account_team",
     db.metadata,
-    Column("account_id", Integer, ForeignKey("account.id"), primary_key=True),
-    Column("team_id", Integer, ForeignKey("team.id"), primary_key=True),
+    Column("account_id", Integer, ForeignKey("fandom_site.account.id"), primary_key=True),
+    Column("team_id", Integer, ForeignKey("fandom_site.team.id"), primary_key=True),
+    schema='fandom_site',
 )
 
 ## Models ##
 class Account(BaseModel, UserMixin):
     __tablename__ = "account"
+    __table_args__ = {'schema': 'fandom_site'}
 
     id = Column(Integer, primary_key=True)
     username = Column(String)
@@ -46,6 +48,7 @@ class Account(BaseModel, UserMixin):
 
 class League(BaseModel):
     __tablename__ = "league"
+    __table_args__ = {'schema': 'fandom_site'}
 
     id = Column(Integer, primary_key=True)
     espn_league_id = Column(Integer)
@@ -63,6 +66,7 @@ class League(BaseModel):
 
 class Team(BaseModel):
     __tablename__ = "team"
+    __table_args__ = {'schema': 'fandom_site'}
 
     id = Column(Integer, primary_key=True)
     espn_team_id = Column(Integer)
@@ -74,7 +78,7 @@ class Team(BaseModel):
     color = Column(String)
     alternate_color = Column(String)
     logo_url = Column(String)
-    league_id = Column(Integer, ForeignKey("league.id"))
+    league_id = Column(Integer, ForeignKey("fandom_site.league.id"))
 
     def __repr__(self):
         return f"<Team(id={self.id}, name='{self.name}', league='{self.league_id}', espn_id='{self.espn_team_id}')>"
