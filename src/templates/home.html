@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="page-container">
-        <div class="page-header">
+        <!-- <div class="page-header">
             <header class="team-page-header">
                 {% if teams_list %}
                 {% for team in teams_list %}
@@ -18,17 +18,17 @@
                 </div>
                 {% endif %}
             </header>
-        </div>
+        </div> -->
 
         <div class="page-content">
-            <div class="team-page-games-container">
+            <div class="app-card team-page-games-container">
                 <div class="team-page-games-header">
                     <a class="nav-icon-wrapper flex-align-left" href="/home?season={{ season - 1 }}">
                         <img class="nav-icon" src="{{ url_for('static', filename='back-icon.png') }}">
                     </a>
                     <div class="team-page-games-header-season-wrapper">
-                        <span class="team-page-games-header-schedule">Schedule</span>
-                        <span>{{ season }}</span>
+                        <span>Schedule</span>
+                        <span class="team-page-games-header-season">{{ season }}</span>
                     </div>
                     <a class="nav-icon-wrapper flex-align-right" href="/home?season={{ season + 1 }}">
                         <img class="nav-icon" src="{{ url_for('static', filename='next-icon.png') }}">

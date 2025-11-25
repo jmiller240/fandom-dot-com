@@ -1,0 +1,824 @@
+    html, body {
+        height: 100%;
+    }
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        color: #323232;
+        display: flex;
+        flex-direction: column;
+        background-color: #fafafa;
+        padding-top: 115px;
+    }
+
+    #app-header {
+        position: fixed;
+        top: 0; left: 0;
+        height: 75px;
+        width: 100%;
+
+        flex: 0 0 auto;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #6B9AC4;
+    }
+    #app-subheader {
+        position: fixed;
+        top: 75px; left: 0;
+        width: 100%;
+        height: 40px;
+
+        box-shadow: 0px 3px 5px -5px rgba(0, 0, 0, 0.5);
+
+        flex: 0 0 auto;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        background-color: #e8e8e8;
+    }
+    .app-header-selected-team-logos-wrapper {
+        margin-right: 2%;
+        
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .app-selected-team-icon {
+        height: 1.2em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+    .app-selected-team-icon:hover {
+        opacity: 0.5;
+    }
+
+    #app-content {
+        flex: 1 1 auto;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #app-footer {
+        flex: 0 0 auto;
+        height: 35px;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        background-color: #d1d1d1;
+        color: #EE7674;
+    }
+    #flash-wrapper {
+        background-color: transparent;
+        text-align: center;
+        font-size: 0.8em;
+    }
+    .flash-error {
+        color: red;
+    }
+    .flash-info {
+        color: yellow;
+    }
+    .flash-success {
+        color: green;
+    }
+
+    .app-logo-container {
+        margin-left: 2%;
+        text-decoration: none;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;       
+    }
+    .app-logo-container:hover {
+        opacity: 0.5;
+    }
+    .app-logo {
+        height: 3em;
+    }
+    .app-title {
+        font-size: 2em;
+        color: #ffffff;
+    }
+
+    .app-header-account-dropdown-button {
+        color: white;
+        padding: 0.25em;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .app-header-account-icon {
+        padding-left: 5px;
+        height: 1.5em;
+    }
+    .app-header-account-dropdown-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .app-header-account-dropdown-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        margin-right: 2%;
+        z-index: 99;
+    }
+    .app-header-dropdown-item {
+        width: 100%;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .app-logout-icon {
+        height: 1em;
+    }
+
+    #title {
+        text-align: center;
+        color: black;
+        margin: auto;
+        text-decoration: none;
+    }
+    .search-form {
+        background-color: #ffffff;
+        border: 1px solid #f0f0f0;
+        border-radius: 15px;
+        padding: 5%;
+        margin: auto;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-content: space-between;
+        align-items: center;
+    }
+    .search-form:hover {
+        cursor: pointer;
+    }
+    .search-form-element {
+        margin: 10px;
+        text-align: center;
+    }
+
+    .login-form-wrapper {
+        margin: auto;
+        padding: 1em;
+    }
+    .login-form {
+        min-width: 300px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .login-form-item {
+        margin: 0.5em;
+        height: 3em;
+    }
+    .login-submit-button {
+        /* padding: 0.5em; */
+        width: 100%;
+        
+        color: white;
+        background-color: #EE7674;
+        border-radius: 15px;
+        border: 1px solid #be5e5c;
+    }
+    .login-submit-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .create-account-button {
+        padding: 0.5em;
+        width: 100%;
+        
+        color: white;
+        background-color: #6B9AC4;
+        border-radius: 15px;
+        border: 1px solid #557b9c;
+    }
+    .create-account-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .form-error {
+        padding-left: 1.5em;
+        font-size: 0.8em;
+        color: #FC100D;
+        list-style-type: disc;
+        text-align: left;
+        align-items: left;
+    }
+    
+
+    .team-selection-container {
+        width: 100%;
+        height: 100%;
+        margin-top: 5px;
+        background-color: gold;
+    }
+    .team-selection-header {
+        font-size: 2em;
+        width: 100%;
+        padding: 0.5em;
+    }
+    .team-selection-card {
+        width: 100%;
+        height: 100%;
+        /* margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 2%;
+        margin-right: 2%; */
+    }
+
+    .team-selection-tabs-wrapper {
+        width: 100%;
+        background-color: white;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .team-selection-tab {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        margin-left: 5%;
+        margin-right: 5%;
+        
+        background-color: white;
+        box-shadow: none;
+        border-radius: 0px;
+    }
+    .team-selection-tab:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .team-selection-tab[aria-selected="true"] {
+        border-bottom: 2px solid #323232;
+        font-weight: bold;
+        /* background-color: #b8b8b8; */
+    }
+    .team-selection-teams-container {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .team-selection-tile {
+        padding: 2em;
+    }
+    .team-selection-tile-logo {
+        height: 3em;
+    }
+    .team-selection-tile-checkbox[type="checkbox"] {
+        width: 2em;
+        height: 2em;
+    }
+    .team-selection-tile-checkbox[type="checkbox"].custom-checkbox:checked + label::before {
+        content: "\2714"; /* Unicode tick symbol */
+        font-size: 5em; /* Adjust this value to change the checkmark size */
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the tick */
+    }
+    .team-selection-submit-button {
+        /* width: 100%; */
+        padding: 0.5em;
+        margin-left: auto;
+        margin-right: auto;
+        min-width: 33%;
+
+        color: white;
+        background-color: #EE7674;
+        border-radius: 15px;
+        border: 1px solid #be5e5c;
+    }
+    .team-selection-submit-button:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+
+    .page-container {
+        height: 100%;
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        /* align-items: flex-start; */
+        /* background-color: #00985f; */
+    }
+
+    .page-header {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: 2%;
+        margin-right: 2%;
+        /* max-height: fit-content; */
+
+        display: flex;
+        flex-direction: column;
+        /* justify-content: flex-start; */
+        align-items: center;
+
+        border-radius: 15px;
+        border: 1px solid #f0f0f0;
+        background-color: #ffffff;
+        /* background-color: blue; */
+        /* padding: 2em; */
+    }
+    .page-content {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 2%;
+        margin-right: 2%;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    /* Styles for screens with a minimum width of 768px (for tablets and desktops) */
+    @media only screen and (min-width: 768px) {
+        .page-content {
+            flex-direction: row; /* Switch to row for larger screens */
+            align-items: flex-start;
+            justify-content: space-between;
+            /* gap: 20px; */
+        }
+    }
+
+    .page-footer {
+        margin-left: 2%;
+        margin-right: 2%;
+        margin-top: 0.5em;
+        margin-bottom: 2em;
+
+        display: flex;
+        flex-direction: row;
+    }
+
+    .app-card {
+        background-color: #ffffff;
+        border: 1px solid #f0f0f0;
+        border-radius: 15px;
+    }
+
+    .team-page-container {
+        display: grid;
+        /* flex-direction: column; */
+        /* justify-content: space-between; */
+        /* background-color: #EE7674; */
+        height: 100%;
+        width: 100%;
+    }
+    .team-page-header {
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: center;
+
+        padding: 1em;
+    }
+    .team-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .team-page-header-logo-wrapper {
+        padding-right: 10px;
+    }
+    .team-header-logo {
+        height: 2em;
+    }
+    .team-header-logo:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    .team-page-name-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        /* gap: 2px; */
+    }
+    .team-header-name {
+        font-size: 1.2em;
+        box-sizing: border-box;
+        border: 0 solid;
+        margin: 0;
+        padding: 0;
+    }
+    .team-header-league {
+        box-sizing: border-box;
+        border: 0 solid;
+        margin: 0;
+        padding: 0;
+
+        font-size: 1em;
+        color: #888888;
+    }
+
+    .team-page-content{
+
+        margin-top: 0.5em;
+        margin-bottom: 2em;
+        margin-left: 2%;
+        margin-right: 2%;
+        /* margin: auto; */
+        /* flex: 1 1 auto; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        /* grid-template-columns: ; */
+        /* justify-content: space-between; */
+        /* align-items: flex-start; */
+        /* align-items: center; */
+        /* background-color: #6B9AC4; */
+    }
+
+    .team-page-games-container {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .team-page-info-container {
+        width: 100%;
+        flex: 1 1 auto;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .team-page-record-card {
+        /* display: grid; */
+        /* flex: 1 1 auto; */
+        /* margin: auto; */
+        /* width: 100%; */
+    }
+    .team-page-record-header {
+        text-align: center;
+    }
+    .team-page-record-table {
+        margin: auto;
+        /* background-color: #00985f; */
+    }
+    .team-page-games-header {
+        flex: 0 1 auto;
+        text-align: center;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 5px;
+
+        border-radius: 10px 10px 0px 0px;
+        border-bottom: 0.5px solid #f0f0f0;
+    }
+
+    .team-page-games-header-season-wrapper {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .team-page-games-header-season {
+        font-size: 0.8em;
+        color: #6a6a6a;
+    }
+
+    .game-card {
+        flex: 1 1 auto;
+
+        display: flex;
+        flex-direction: column;
+
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 2px;
+        border-bottom: 0.5px solid #f0f0f0;
+    }
+    .game-card:hover {
+        opacity: 0.5;
+    }
+
+    .game-card-header {
+        display: grid;
+        grid-template-columns: 3fr 2fr 3fr;
+        align-items: center;
+
+        font-size: 0.6em;
+        padding-bottom: 2px;
+    }
+
+    .game-card-result {
+        font-size: 0.8em;
+
+        display: grid;
+        grid-template-columns: 2.5fr 1fr 2.5fr;
+        align-items: center;
+    }
+    .game-card-away-team-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        margin-left: auto;
+    }
+    
+    .game-card-result-wrapper {
+        padding-left: 10px;
+        padding-right: 10px;
+
+        display: grid;
+        justify-content: center;
+        align-items: center;
+    }
+    .game-card-result-element {
+        min-width: fit-content;
+        width: 75px;
+
+        text-align: center;
+
+        padding: 5px;
+        border-radius: 5px;        
+    }
+    .game-card-home-team-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        margin-right: auto;
+    }
+
+    .game-card-team-name {
+
+        display: inline;
+        padding: 10px;
+    }
+    .game-card-team-logo {
+        display: inline;
+        height: 1.5em;
+    }
+
+    .winner {
+        color: green;
+    }
+    .result-card-winner {
+        background-color: #00985f;
+        color: white;
+    }
+    .result-card-loser {
+        background-color: #dd3636;
+        color: white;
+    }
+    .result-card-tie {
+        background-color: #b8b8b8;
+        color: white;
+    }
+    .league-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        /* background-color: #a8a8a8; */
+    }
+    .league-name {
+        display: inline;
+        padding-right: 5px;
+    }
+    .league-logo {
+        height: 1em;
+        display: inline;
+    }
+
+
+    .boxscore-page-header {
+        margin-top: 2em;
+        margin-bottom: 0.5em;
+        margin-left: 2%;
+        margin-right: 2%;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        border-radius: 15px;
+        border: 1px solid #f0f0f0;
+        background-color: #ffffff;
+        padding: 2em;
+    }
+
+    
+    .game-page-header-league-container {
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        padding: 5px;
+        border-bottom: 0.5px solid #f0f0f0;
+    }
+    .game-page-header-league-logo-wrapper {
+        padding-right: 10px;
+    }
+    .game-page-header-league-logo {
+        height: 1.2em;
+    }
+    .game-page-header-league-name {
+        font-size: 1em;
+    }
+    .game-page-header-game-info-container {
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        padding: 5px;
+        border-bottom: 0.5px solid #f0f0f0;
+
+    }
+    .game-page-header-game-info {
+        font-size: 0.8em;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .game-page-header-result-container {
+        /* margin: auto; */
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 1em;
+        /* background-color: #b8b8b8; */
+
+    }
+    .game-page-header-result-status-section {
+        width: 100%;
+
+        display: grid;
+        grid-template-columns: 3fr 1fr 3fr;
+
+        padding: 5px;
+    }
+    .game-page-header-boxscore-section {
+        width: 100%;
+
+        display: grid;
+        justify-content: center;
+        
+        padding: 5px;
+    }
+
+    .game-page-header-status-wrapper {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .game-page-header-score {
+        font-size: 2em;
+    }
+    .game-page-header-status {
+        color: #888888;
+    }
+
+    .game-page-header-team-name-container-left {
+        display: flex;
+        justify-content: right;
+        align-items: center;
+    }
+    .game-page-header-team-name-container-right {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+    }
+
+    .team-name-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        /* justify-content: right; */
+        
+        max-width: fit-content;
+        /* background-color: #00985f; */
+    }
+    .team-name-wrapper:hover {
+        opacity: 0.5;
+    }
+
+    .team-name-container-right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: left;
+        
+        /* background-color: #00985f; */
+
+    }
+    .team-logo-wrapper-left {
+        padding-left: 15px;
+    }
+    .team-logo-wrapper-right {
+        padding-right: 15px;
+    }
+    .team-logo-header {
+        height: 3em;
+    }
+    .team-logo-detail {
+        height: 1.5em;
+    }
+    .team-name-header {
+        font-size: 2em;
+    }
+    .team-name-detail {
+        font-size: 1em;
+    }
+    
+    .game-page-boxscore-table {
+        max-width: fit-content;
+        font-size: 0.8em;
+    }
+
+    .nav-icon-wrapper {
+        padding: 5px;
+    }
+    .nav-icon-wrapper:hover {
+        opacity: 0.5;
+        cursor: pointer;
+        /* background-color: #b8b8b8;
+        border-radius: 15px; */
+    }
+    .nav-icon {
+        /* height: 2em; */
+        width: 2em;
+    }
+
+    .flex-align-left {
+        margin-right: auto;
+    }
+    .flex-align-right {
+        margin-left: auto;
+    }
+    .grid-align-left {
+        /* text-align: left; */
+        justify-content: left;
+    }
+    .grid-align-right {
+        /* text-align: right; */
+        justify-content: right;
+    }
+    .grid-align-center {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .secondary-font-color {
+        color: #888888;
+    }
+
