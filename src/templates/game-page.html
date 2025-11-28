@@ -4,37 +4,40 @@
     <div class="page-container">
         <div class="page-header">
             <header class="game-page-header-league-container">
-                <div class="game-page-header-league-logo-wrapper">
-                    <img src="{{ game_info['league']['logo_url'] }}" class="game-page-header-league-logo"/>
-                </div>
+                <img src="{{ game_info['league']['logo-url'] }}" class="game-page-header-league-logo"/>
                 <span class="game-page-header-league-name">
                     {{ game_info['league']['name'] }}
                 </span>
             </header>
+
             <header class="game-page-header-game-info-container">
-                <span class="game-page-header-game-info">{{ game_info['date'] }}</span><span>|</span>
-                <span class="game-page-header-game-info">{{ game_info['start-time'] }}</span><span>|</span>
-                <span class="game-page-header-game-info">{{ game_info['venue'] }}</span><span>|</span>
-                <span class="game-page-header-game-info">{{ game_info['city'] }}, {{ game_info['state'] }}</span>
+                <div class="game-page-header-game-info-detail-wrapper">
+                    <img class="detail-icon" src="{{ url_for('static', filename='date-icon.png') }}">
+                    <span class="game-page-header-game-info">{{ game_info['date'] }}, {{ game_info['start-time'] }}</span>
+                </div>
+                <div class="game-page-header-game-info-detail-wrapper">
+                    <img class="detail-icon" src="{{ url_for('static', filename='location-icon.png') }}">
+                    <span class="game-page-header-game-info">{{ game_info['venue'] }}, {{ game_info['city'] }}, {{ game_info['state'] }}</span>
+                </div>
                 {% if game_info['completed'] %}
-                <span>|</span>
-                <span class="game-page-header-game-info">{{ game_info['attendance'] }}</span>
+                <div class="game-page-header-game-info-detail-wrapper">
+                    <img class="detail-icon" src="{{ url_for('static', filename='attendance-icon.png') }}">
+                    <span class="game-page-header-game-info">{{ game_info['attendance'] }}</span>
+                </div>
                 {% endif %}
             </header>
+
             <header class="game-page-header-result-container">
                 <section class="game-page-header-result-status-section">
-                    <div class="game-page-header-team-name-container-left">
-                        <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['away-team']['id'] }}/season/{{ game_info['season']['year'] }}">
-                            <div class="team-name-wrapper">
-                                <span class="team-name-header">
-                                    {{ game_info['away-team']['name'] }}
-                                </span>
-                                <div class="team-logo-wrapper-left">
-                                    <img src="{{ game_info['away-team']['logo_url'] }}" class="team-logo-header"/>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    <a class="game-page-header-team-name-container-left" href="/{{ game_info['league']['name'] }}/team/{{ game_info['away-team']['id'] }}/season/{{ game_info['season']['year'] }}">
+                        <span class="team-name-header">
+                            {{ game_info['away-team']['name'] }}
+                        </span>
+                        <div>
+                            <img class="team-logo-header" src="{{ game_info['away-team']['logo_url'] }}"/>
+                        </div>
+                    </a>
+
                     <div class="game-page-header-status-wrapper">
                         {% if game_info['completed'] %}
                         <span class="game-page-header-score">
@@ -52,19 +55,17 @@
                         </span>
                         {% endif %}
                     </div>
-                    <div class="game-page-header-team-name-container-right">
-                        <a href="/{{ game_info['league']['name'] }}/team/{{ game_info['home-team']['id'] }}/season/{{ game_info['season']['year'] }}">
-                            <div class="team-name-wrapper">
-                                <div class="team-logo-wrapper-right">
-                                    <img src="{{ game_info['home-team']['logo_url'] }}" class="team-logo-header"/>
-                                </div>
-                                <span class="team-name-header">
-                                    {{ game_info['home-team']['name'] }}
-                                </span>
-                            </div>
-                        </a>
-                    </div>
+
+                    <a class="game-page-header-team-name-container-right" href="/{{ game_info['league']['name'] }}/team/{{ game_info['home-team']['id'] }}/season/{{ game_info['season']['year'] }}">
+                        <div>
+                            <img class="team-logo-header" src="{{ game_info['home-team']['logo_url'] }}"/>
+                        </div>
+                        <span class="team-name-header">
+                            {{ game_info['home-team']['name'] }}
+                        </span>
+                    </a>
                 </section>
+
                 {% if game_info['completed'] %}
                 <section class="game-page-header-boxscore-section">
                     <table class="game-page-boxscore-table table">

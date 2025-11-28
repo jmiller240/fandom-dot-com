@@ -274,6 +274,7 @@ class ESPNAPIService:
         state = response['gameInfo']['venue']['address']['state'] if 'state' in response['gameInfo']['venue']['address'].keys() else ''
         
         attendance = response['gameInfo']['attendance'] if game_completed else 0
+        attendance = f'{attendance:,}'
         game_winner = None
 
         ## Home team info

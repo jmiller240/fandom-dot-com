@@ -21,7 +21,7 @@
                         <img class="nav-icon" src="{{ url_for('static', filename='back-icon.png') }}">
                     </a>
                     <div class="team-page-games-header-season-wrapper">
-                        <span>Schedule</span>
+                        <span class="team-page-games-header-schedule">Schedule</span>
                         <span class="team-page-games-header-season">{{ season }}</span>
                     </div>
                     <a class="nav-icon-wrapper flex-align-right" href="/{{ team['league']['name'] }}/team/{{ team['espn_id'] }}/season/{{ season + 1}}">
