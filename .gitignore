@@ -4,6 +4,8 @@
 aws/
 
 ## Files
+.env
+
 notes.txt
 
 

@@ -1,0 +1,1 @@
+web: gunicorn fandom_dot_com:app
