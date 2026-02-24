@@ -5,7 +5,7 @@ import sys
 
 import pandas as pd
 
-from connect_postgres import get_postgres_url_local, get_postgres_url_aws
+from connect_postgres import get_postgres_url_local, get_postgres_url_aws, get_postgres_url_render
 
 
 def create_database(loc: str):
@@ -16,8 +16,10 @@ def create_database(loc: str):
         url = get_postgres_url_local()
     elif loc == 'aws':
         url = get_postgres_url_aws()
+    elif loc == 'render':
+        url = get_postgres_url_render()
     else:
-        raise ValueError('Parameter "loc" must be "local" or "aws"')
+        raise ValueError('Parameter "loc" must be "local" or "aws" or "render".')
     
     # Connect
     connection = psycopg2.connect(url)
@@ -50,8 +52,10 @@ def populate_database(loc: str):
         url = get_postgres_url_local()
     elif loc == 'aws':
         url = get_postgres_url_aws()
+    elif loc == 'render':
+        url = get_postgres_url_render()
     else:
-        raise ValueError('Parameter "loc" must be "local" or "aws"')
+        raise ValueError('Parameter "loc" must be "local" or "aws" or "render"')
     
     # Connect
     engine = sqlalchemy.create_engine(url)

@@ -1,19 +1,21 @@
+'''
+Jack Miller
+November 2025
 
+Module home, provides function that creates application.
+'''
+
+# Python
 import os
 from dotenv import load_dotenv
 
 from flask import Flask
 
+# Application
 from src.extensions import db, login_manager
-
 from src.models import Account
-
 from src.accounts.views import accounts_bp
 from src.core.views import core_bp
-
-
-# Load .env variables
-# load_dotenv()
 
 
 ## Main func ##
@@ -21,7 +23,11 @@ from src.core.views import core_bp
 def create_app():
 
     # Get DB Url
-    database_url = os.getenv('DATABASE_URL')
+    env = os.getenv('ENVIRONMENT')
+    if env == 'DEV':
+        database_url = os.getenv('DATABASE_URL_DEV')
+    else:
+        database_url = os.getenv('DATABASE_URL_PROD')
 
     ## App ##
     app = Flask(__name__)
