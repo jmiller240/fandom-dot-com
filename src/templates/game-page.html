@@ -3,11 +3,13 @@
 {% block content %}
     <div class="page-container">
         <div class="page-header">
-            <header class="game-page-header-league-container">
-                <img src="{{ game_info['league']['logo-url'] }}" class="game-page-header-league-logo"/>
-                <span class="game-page-header-league-name">
-                    {{ game_info['league']['name'] }}
-                </span>
+            <header>
+                <a href="/{{ game_info['league']['name'] }}" class="game-page-header-league-container">
+                    <img src="{{ game_info['league']['logo-url'] }}" class="game-page-header-league-logo"/>
+                    <span class="game-page-header-league-name">
+                        {{ game_info['league']['name'] }}
+                    </span>
+                </a>
             </header>
 
             <header class="game-page-header-game-info-container">

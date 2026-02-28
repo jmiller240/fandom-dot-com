@@ -3,6 +3,8 @@ Jack Miller
 Nov 2025
 '''
 
+import datetime
+
 from flask import render_template, request, redirect, url_for, Blueprint
 from flask_login import login_required, current_user
 import pprint
@@ -133,6 +135,15 @@ def get_team_info(team: Team, season: int):
 
     return team_info
 
+def get_league_dict(league: League) -> dict:
+    league_info = {
+        'espn_id': league.espn_league_id,
+        'name': league.name,
+        'logo_url': league.logo_url,
+        'current_season': league.current_season,
+        'current_season_type': league.current_season_type
+    }
+    return league_info
 
 @core_bp.route("/home")
 @login_required
@@ -167,6 +178,38 @@ def home():
     # pprint.pprint(master_games[:5])
 
     return render_template('home.html', teams_list=master_teams_info, games_list=master_games, season=season)
+
+
+@core_bp.route("/<league>")
+def league_page(league: str):
+
+    ## Query DB
+    print('League', league)
+    league_obj: League = League.query.filter_by(name=league).first()
+    league_dict = get_league_dict(league=league_obj)
+    
+    ## Get schedule
+    current_dt: datetime.date
+    if 'date' in request.args:
+        try:
+            current_dt = datetime.datetime.strptime(request.args['date'], '%Y%m%d')
+        except:
+            current_dt = datetime.date.today()
+    else:
+        current_dt = datetime.date.today()
+
+    prev_dt = current_dt - datetime.timedelta(days=1)
+    next_dt = current_dt + datetime.timedelta(days=1)
+    date = {
+        'display': current_dt.strftime('%a, %b %-d'),
+        'prev': prev_dt.strftime('%Y%m%d'),
+        'current': current_dt.strftime('%Y%m%d'),
+        'next': next_dt.strftime('%Y%m%d'),
+    }
+
+    games = ESPNService.get_league_games(league=league, date=current_dt)
+
+    return render_template('league-page.html', league=league_dict, date=date, games_list=games)
 
 
 @core_bp.route("/<league>/team/<team_id>/season/<season>")

@@ -53,4 +53,11 @@ def create_app():
     # SQLAlchemy
     db.init_app(app)
 
+    # Inject app with information
+    @app.context_processor
+    def inject_global_vars():
+        return {
+            'leagues': ['NFL', 'NBA', 'MLB', 'CFB', 'PREM']
+        }
+
     return app

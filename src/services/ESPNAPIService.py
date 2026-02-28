@@ -3,7 +3,7 @@ from flask import session
 
 
 import requests
-from datetime import datetime
+from datetime import datetime, date
 import pytz
 import pprint
 import pandas as pd
@@ -68,10 +68,93 @@ class ESPNAPIService:
         elif league == 'PREM':
             return 'https://partners.api.espn.com/v2/sports/soccer/eng.1'
 
+    def get_scoreboard_url(self, league: str):
+        if league == 'NFL':
+            return 'https://cdn.espn.com/core/nfl/scoreboard?xhr=1'
+        elif league == 'NBA':
+            return 'https://cdn.espn.com/core/nba/scoreboard?xhr=1'
+        elif league == 'CFB':
+            return 'https://cdn.espn.com/core/cfb/scoreboard?xhr=1'
+        elif league == 'MLB':
+            return 'https://cdn.espn.com/core/mlb/scoreboard?xhr=1'
+        elif league == 'PREM':
+            return 'https://cdn.espn.com/core/eng.1/scoreboard?xhr=1'
+
+
+    ''' Helpers '''
+
     def _api_call(self, url: str):
         print(f' ---------------------- API CALL ----------------------')
         print(url)
         return requests.get(url).json()
+
+    def _parse_event(self, event: dict):
+        
+        # Important objects
+        competition = event['competitions'][0]
+        season = event['season']
+        home_team = competition['competitors'][0]
+        away_team = competition['competitors'][1]
+
+        # Season info
+        season_obj = {
+            'year': season['year'],
+            'type': season['type']
+        }
+
+        # Game info
+        event_id = event['id']
+        event_name = event['shortName']
+        dt = format_datetime_from_date(event['date'])
+        date = format_date_from_date(event['date'])
+        time = format_time_from_date(event['date'])
+        headline = competition['notes'][0]['headline'] if competition['notes'] else ''
+        status = competition['status']['type']['name']
+        completed = competition['status']['type']['completed']
+        
+        # Get home team logo
+        home_team_logo = home_team['team']['logo']
+        away_team_logo = away_team['team']['logo']
+
+        # Score / Result
+        result = None
+        home_team_score = None
+        away_team_score = None
+        game_score_string = None
+
+        if completed:
+            result = 'home' if home_team['winner'] else 'away' if away_team['winner'] else 'tie'
+
+            home_team_score = int(home_team['score'])
+            away_team_score = int(away_team['score'])
+            game_score_string = str(away_team_score) + " - " + str(home_team_score)
+        elif status == 'STATUS_IN_PROGRESS':
+            home_team_score = int(home_team['score'])
+            away_team_score = int(away_team['score'])
+            game_score_string = str(away_team_score) + " - " + str(home_team_score)
+
+        game_dict = {
+            'event_id': event_id,
+            'name': event_name,
+            'datetime': dt,
+            'date': date,
+            'time': time,
+            'season': season_obj,
+            'headline': headline,
+            'completed': completed,
+            'home_team': home_team['team']['abbreviation'],
+            'home_team_logo': home_team_logo,
+            'home_team_score': home_team_score,
+            'away_team': away_team['team']['abbreviation'],
+            'away_team_logo': away_team_logo,
+            'away_team_score': away_team_score,
+            'game_score_string': game_score_string,
+            'winner': result,
+        }
+        
+        return game_dict
+
+    ''' Public '''
 
     def get_league_current_season(self, league: str) -> int:
         league_info = self.get_league_info(league=league)
@@ -102,6 +185,25 @@ class ESPNAPIService:
             session['leagues'][league] = league_info
             
             return league_info
+
+    def get_league_games(self, league: str, date: date):
+        # Hit API
+        date_str = date.strftime('%Y%m%d')
+        base_url = self.get_scoreboard_url(league=league)
+        url = f'{base_url}&date={date_str}'
+        response = self._api_call(url)
+
+        # Process records
+        league_season_name = response['content']['sbData']['leagues'][0]['season']['type']['name']
+        events = response['content']['sbData']['events']
+        games = []
+
+        for event in events:
+            game_dict = self._parse_event(event)
+            game_dict['season']['name'] = league_season_name
+            games.append(game_dict)
+        
+        return games
 
     def get_team_record(self, league: str, team_id: int, season: int):
         # Hit API
@@ -198,6 +300,7 @@ class ESPNAPIService:
                 }
                 headline = competition['notes'][0]['headline'] if competition['notes'] else ''
 
+                status = competition['status']['type']['name']
                 completed = competition['status']['type']['completed']
                 home_team = competition['competitors'][0]
                 away_team = competition['competitors'][1]
@@ -214,13 +317,18 @@ class ESPNAPIService:
                 game_score_string = None
                 selected_team_result = None
 
-                # name = STATUS_IN_PROGRESS
                 if completed:
                     result = 'home' if home_team['winner'] else 'away' if away_team['winner'] else 'tie'
                     selected_team_result = 'tie' if result == 'tie' else 'win' if ((result == 'home' and selected_team_is_home) or (result == 'away' and not selected_team_is_home)) else 'loss'
                     home_team_score = int(home_team['score']['value'])
                     away_team_score = int(away_team['score']['value'])
                     game_score_string = str(away_team_score) + " - " + str(home_team_score)
+                elif status == 'STATUS_IN_PROGRESS':
+                    # TODO - find an API with live score
+                    # home_team_score = int(home_team['score']['value'])
+                    # away_team_score = int(away_team['score']['value'])
+                    # game_score_string = str(away_team_score) + " - " + str(home_team_score)
+                    game_score_string = competition['status']['type']['shortDetail']
 
                 game_dict = {
                     'event_id': event_id,
@@ -230,6 +338,7 @@ class ESPNAPIService:
                     'league': league_obj,
                     'season': season_obj,
                     'headline': headline,
+                    'in-progress': status == 'STATUS_IN_PROGRESS',
                     'completed': completed,
                     'home-team': home_team['team']['abbreviation'],
                     'home-team-logo': home_team_logo,
