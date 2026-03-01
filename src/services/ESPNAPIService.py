@@ -110,6 +110,7 @@ class ESPNAPIService:
         time = format_time_from_date(event['date'])
         headline = competition['notes'][0]['headline'] if competition['notes'] else ''
         status = competition['status']['type']['name']
+        status_display = competition['status']['type']['shortDetail']
         completed = competition['status']['type']['completed']
         
         # Get home team logo
@@ -141,6 +142,8 @@ class ESPNAPIService:
             'time': time,
             'season': season_obj,
             'headline': headline,
+            'status': status_display,
+            'in_progress': (status == 'STATUS_IN_PROGRESS'),
             'completed': completed,
             'home_team': home_team['team']['abbreviation'],
             'home_team_logo': home_team_logo,
@@ -155,6 +158,38 @@ class ESPNAPIService:
         return game_dict
 
     ''' Public '''
+
+    def get_games(self, date: date):
+
+        # Variables
+        date_str = date.strftime('%Y%m%d')
+
+        # Get games for each league
+        league_games = []
+        for league in ['NBA', 'MLB']:
+            # Hit API for games
+            base_url = self.get_scoreboard_url(league=league)
+            url = f'{base_url}&date={date_str}'
+            response = self._api_call(url)
+
+            # Process games
+            league_season_name = response['content']['sbData']['leagues'][0]['season']['type']['name']
+            events = response['content']['sbData']['events']
+            games = []
+
+            for event in events:
+                game_dict = self._parse_event(event)
+                game_dict['season']['name'] = league_season_name
+                games.append(game_dict)
+            
+            # Make dict to return
+            d = {
+                'league': self.get_league_info(league),
+                'games_list': games
+            }
+            league_games.append(d)
+        
+        return league_games
 
     def get_league_current_season(self, league: str) -> int:
         league_info = self.get_league_info(league=league)
@@ -176,9 +211,9 @@ class ESPNAPIService:
             league_info = {
                 'id': response['id'],
                 'name': league,
-                'logo-url': response['logos'][0]['href'],
-                'current-season': response['season']['year'],
-                'current-season-type': response['season']['type']['type']
+                'logo_url': response['logos'][0]['href'],
+                'current_season': response['season']['year'],
+                'current_season_type': response['season']['type']['type']
             }
 
             # Cache object

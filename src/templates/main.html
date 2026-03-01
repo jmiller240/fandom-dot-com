@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="page-container">
+
+        <div class="page-content">
+            
+            <div class="schedule-container">
+                <div class="app-card schedule-header">
+                    <a class="nav-icon-wrapper flex-align-left" href="/main?date={{ date['prev'] }}">
+                        <img class="nav-icon" src="{{ url_for('static', filename='back-icon.png') }}">
+                    </a>
+                    <div class="team-page-games-header-season-wrapper">
+                        <span class="team-page-games-header-schedule">{{ date['display'] }}</span>
+                    </div>
+                    <a class="nav-icon-wrapper flex-align-right" href="/main?date={{ date['next'] }}">
+                        <img class="nav-icon" src="{{ url_for('static', filename='next-icon.png') }}">
+                    </a>
+                </div>
+                
+                {% for league_obj in league_games %}
+                <div class="app-card">
+                    <div class="schedule-games-card-header">
+                        <img class="team-logo-detail" src="{{ league_obj['league']['logo_url'] }}"/>
+                        <span class="team-name-detail">{{ league_obj['league']['name'] }}</span>
+                    </div>
+
+                    {% for game in league_obj['games_list'] %}
+                    <a class="game-card" href="/{{ league_obj['league']['name'] }}/boxscore/{{ game['event_id'] }}">
+                        <div class="game-card-header">
+                            <span class="grid-align-left">{{ game['date'] }}</span>
+                            <span class="grid-align-center">{{game['headline']}}</span>
+                            <div class="league-container grid-align-right">
+                                <span class="league-name">{{ league_obj['league']['name'] + ' ' + game['season']['name'] }}</span>
+                                <img class="league-logo" src="{{ league_obj['league']['logo_url'] }}"/>
+                            </div>
+                        </div>
+
+                        <div class="game-card-result">
+                            <div id="away-team" class="game-card-away-team-container">
+                                <p class="game-card-team-name {{ 'game-card-team-winner' if game['winner'] == 'away' }}">{{ game['away_team'] }}</p>
+                                <img class="team-logo-detail" src="{{ game['away_team_logo'] }}"/>
+                            </div>
+
+                            {% if game['completed'] or game['in_progress'] %}
+                            <div class="game-card-result-wrapper">
+                                <span id="result" class="game-card-result-element">{{ game['game_score_string'] }}</span>
+                                <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">{{ game['status'] }}</span>
+                            </div>
+                            {% else %}
+                            <div class="game-card-result-wrapper">
+                                <span id="result" class="game-card-result-element">
+                                    {{ game['time'] }}
+                                </span>
+                            </div>
+                            {% endif %}
+
+                            <div id="home-team" class="game-card-home-team-container">
+                                <img class="team-logo-detail" src="{{ game['home_team_logo'] }}"/>
+                                <p class="game-card-team-name {{ 'game-card-team-winner' if game['winner'] == 'home' }}">{{ game['home_team'] }}</p>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="team-page-info-container">
+                Coming soon...
+            </div>
+        </div>
+    </div>
+{% endblock content %}

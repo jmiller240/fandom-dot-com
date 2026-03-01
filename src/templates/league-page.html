@@ -45,16 +45,15 @@
                             <img class="team-logo-detail" src="{{ game['away_team_logo'] }}"/>
                         </div>
 
-                        {% if game['completed'] == False %}
+                        {% if game['completed'] or game['in_progress'] %}
                         <div class="game-card-result-wrapper">
-                            <span id="result" class="game-card-result-element">
-                                {{ game['time'] }}
-                            </span>
+                            <span id="result" class="game-card-result-element">{{ game['game_score_string'] }}</span>
+                            <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">{{ game['status'] }}</span>
                         </div>
                         {% else %}
                         <div class="game-card-result-wrapper">
                             <span id="result" class="game-card-result-element">
-                                {{ game['game_score_string'] if game['completed'] else game['time'] }}
+                                {{ game['time'] }}
                             </span>
                         </div>
                         {% endif %}
