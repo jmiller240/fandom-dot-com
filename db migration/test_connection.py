@@ -24,5 +24,5 @@ def test_render():
 
     cursor.close()
 
-# test_local()
+test_local()
 test_render()

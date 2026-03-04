@@ -1,4 +1,4 @@
-league,espn_team_id,displayName,location,name,shortDisplayName,abbreviation,color,alternateColor,logoURL,app-id
+league,espn_team_id,display_name,location,name,short_display_name,abbreviation,color,alternate_color,logo_url,app-id
 NFL,1,Atlanta Falcons,Atlanta,Falcons,Falcons,ATL,a71930,000000,https://a.espncdn.com/i/teamlogos/nfl/500/atl.png,0
 NFL,2,Buffalo Bills,Buffalo,Bills,Bills,BUF,00338d,d50a0a,https://a.espncdn.com/i/teamlogos/nfl/500/buf.png,1
 NFL,3,Chicago Bears,Chicago,Bears,Bears,CHI,0b1c3a,e64100,https://a.espncdn.com/i/teamlogos/nfl/500/chi.png,2

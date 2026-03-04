@@ -22,7 +22,8 @@ def get_postgres_url_render():
     return url
     
 def get_postgres_url_local():
-    return os.getenv('DATABASE_URL')
+    url = f'postgresql://fandomdotcom_user:fandompass@localhost:5432/fandomdotcom_dev'
+    return url
     
 
 ## Connection funcs ##

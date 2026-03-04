@@ -17,6 +17,7 @@ from src.models import Account
 from src.accounts.views import accounts_bp
 from src.core.views import core_bp
 
+from src.helpers.constants import LEAGUES
 
 ## Main func ##
 
@@ -57,7 +58,7 @@ def create_app():
     @app.context_processor
     def inject_global_vars():
         return {
-            'leagues': ['NFL', 'NBA', 'MLB', 'CFB', 'NCAAM', 'PREM']
+            'leagues': LEAGUES.keys()
         }
 
     return app

@@ -9,7 +9,7 @@ import pprint
 import pandas as pd
 
 from ..helpers.functions import format_datetime_from_date, format_date_from_date, format_time_from_date
-
+from ..helpers.constants import LEAGUES
 
 NFL_LEAGUE_OBJ = {
     'name': 'NFL',
@@ -33,58 +33,88 @@ class ESPNAPIService:
         pass
 
     def _get_site_api_espn_base_url(self, league):
-        if league == 'NFL':
-            return 'http://site.api.espn.com/apis/site/v2/sports/football/nfl'
-        elif league == 'NBA':
-            return 'http://site.api.espn.com/apis/site/v2/sports/basketball/nba'
-        elif league == 'CFB':
-            return 'http://site.api.espn.com/apis/site/v2/sports/football/college-football'
-        elif league == 'NCAAM':
-            return 'http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball'
-        elif league == 'MLB':
-            return 'http://site.api.espn.com/apis/site/v2/sports/baseball/mlb'
-        elif league == 'PREM':
-            return 'http://site.api.espn.com/apis/site/v2/sports/soccer/eng.1'
+        sport = LEAGUES[league]['sport']
+        code = LEAGUES[league]['code']
+
+        return f'http://site.api.espn.com/apis/site/v2/sports/{sport}/{code}'
+    
+        # if league == 'NFL':
+        #     return 'http://site.api.espn.com/apis/site/v2/sports/football/nfl'
+        # elif league == 'NBA':
+        #     return 'http://site.api.espn.com/apis/site/v2/sports/basketball/nba'
+        # elif league == 'CFB':
+        #     return 'http://site.api.espn.com/apis/site/v2/sports/football/college-football'
+        # elif league == 'MCBB':
+        #     return 'http://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball'
+        # elif league == 'MLB':
+        #     return 'http://site.api.espn.com/apis/site/v2/sports/baseball/mlb'
+        # elif league == 'PREM':
+        #     return 'http://site.api.espn.com/apis/site/v2/sports/soccer/eng.1'
 
     def _get_sports_core_api_espn_base_url(self, league):
-        if league == 'NFL':
-            return 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl'
-        elif league == 'NBA':
-            return 'https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba'
-        elif league == 'CFB':
-            return 'https://sports.core.api.espn.com/v2/sports/football/leagues/college-football'
-        elif league == 'NCAAM':
-            return 'https://sports.core.api.espn.com/v2/sports/basketball/leagues/mens-college-basketball'
-        elif league == 'MLB':
-            return 'https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb'
-        elif league == 'PREM':
-            return 'https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1'
+        sport = LEAGUES[league]['sport']
+        code = LEAGUES[league]['code']
+
+        return f'https://sports.core.api.espn.com/v2/sports/{sport}/leagues/{code}'
+    
+        # if league == 'NFL':
+        #     return 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl'
+        # elif league == 'NBA':
+        #     return 'https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba'
+        # elif league == 'CFB':
+        #     return 'https://sports.core.api.espn.com/v2/sports/football/leagues/college-football'
+        # elif league == 'MCBB':
+        #     return 'https://sports.core.api.espn.com/v2/sports/basketball/leagues/mens-college-basketball'
+        # elif league == 'MLB':
+        #     return 'https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb'
+        # elif league == 'PREM':
+        #     return 'https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1'
 
     def get_partners_api_espn_base_url(self, league: str):
-        if league == 'NFL':
-            return 'https://partners.api.espn.com/v2/sports/football/nfl'
-        elif league == 'NBA':
-            return 'https://partners.api.espn.com/v2/sports/basketball/nba'
-        elif league == 'CFB':
-            return 'https://partners.api.espn.com/v2/sports/football/college-football'
-        elif league == 'MLB':
-            return 'https://partners.api.espn.com/v2/sports/baseball/mlb'
-        elif league == 'PREM':
-            return 'https://partners.api.espn.com/v2/sports/soccer/eng.1'
+        sport = LEAGUES[league]['sport']
+        code = LEAGUES[league]['code']
+
+        return f'https://partners.api.espn.com/v2/sports/{sport}/{code}'
+    
+        # if league == 'NFL':
+        #     return 'https://partners.api.espn.com/v2/sports/football/nfl'
+        # elif league == 'NBA':
+        #     return 'https://partners.api.espn.com/v2/sports/basketball/nba'
+        # elif league == 'CFB':
+        #     return 'https://partners.api.espn.com/v2/sports/football/college-football'
+        # elif league == 'MCBB':
+        #     return 'https://partners.api.espn.com/v2/sports/basketball/mens-college-basketball'
+        # elif league == 'MLB':
+        #     return 'https://partners.api.espn.com/v2/sports/baseball/mlb'
+        # elif league == 'PREM':
+        #     return 'https://partners.api.espn.com/v2/sports/soccer/eng.1'
 
     def get_scoreboard_url(self, league: str):
-        if league == 'NFL':
-            return 'https://cdn.espn.com/core/nfl/scoreboard?xhr=1'
-        elif league == 'NBA':
-            return 'https://cdn.espn.com/core/nba/scoreboard?xhr=1'
-        elif league == 'CFB':
-            return 'https://cdn.espn.com/core/cfb/scoreboard?xhr=1'
-        elif league == 'NCAAM':
-            return 'https://cdn.espn.com/core/mens-college-basketball/scoreboard?xhr=1&group=50'
-        elif league == 'MLB':
-            return 'https://cdn.espn.com/core/mlb/scoreboard?xhr=1'
-        elif league == 'PREM':
-            return 'https://cdn.espn.com/core/eng.1/scoreboard?xhr=1'
+        sport = LEAGUES[league]['sport']
+        code = LEAGUES[league]['code']
+
+        base_url = f'https://cdn.espn.com/core/{code}/scoreboard?xhr=1'
+
+        url = ''
+        if league == 'MCBB':
+            url = f'{base_url}&group=50'
+        else:
+            url = base_url
+        
+        return url
+    
+        # if league == 'NFL':
+        #     return 'https://cdn.espn.com/core/nfl/scoreboard?xhr=1'
+        # elif league == 'NBA':
+        #     return 'https://cdn.espn.com/core/nba/scoreboard?xhr=1'
+        # elif league == 'CFB':
+        #     return 'https://cdn.espn.com/core/cfb/scoreboard?xhr=1'
+        # elif league == 'MCBB':
+        #     return 'https://cdn.espn.com/core/mens-college-basketball/scoreboard?xhr=1&group=50'
+        # elif league == 'MLB':
+        #     return 'https://cdn.espn.com/core/mlb/scoreboard?xhr=1'
+        # elif league == 'PREM':
+        #     return 'https://cdn.espn.com/core/eng.1/scoreboard?xhr=1'
 
 
     ''' Helpers '''
@@ -172,7 +202,7 @@ class ESPNAPIService:
 
         # Get games for each league
         league_games = []
-        for league in ['NBA', 'MLB', 'NCAAM']:
+        for league in LEAGUES.keys():
             # Hit API for games
             # base_url = self.get_scoreboard_url(league=league)
             base_url = self._get_site_api_espn_base_url(league=league)
