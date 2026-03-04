@@ -57,7 +57,7 @@ def create_app():
     @app.context_processor
     def inject_global_vars():
         return {
-            'leagues': ['NFL', 'NBA', 'MLB', 'CFB', 'PREM']
+            'leagues': ['NFL', 'NBA', 'MLB', 'CFB', 'NCAAM', 'PREM']
         }
 
     return app

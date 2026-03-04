@@ -5,7 +5,7 @@
         <div class="page-header">
             <header>
                 <a href="/{{ game_info['league']['name'] }}" class="game-page-header-league-container">
-                    <img src="{{ game_info['league']['logo-url'] }}" class="game-page-header-league-logo"/>
+                    <img src="{{ game_info['league']['logo_url'] }}" class="game-page-header-league-logo"/>
                     <span class="game-page-header-league-name">
                         {{ game_info['league']['name'] }}
                     </span>
@@ -15,7 +15,7 @@
             <header class="game-page-header-game-info-container">
                 <div class="game-page-header-game-info-detail-wrapper">
                     <img class="detail-icon" src="{{ url_for('static', filename='date-icon.png') }}">
-                    <span class="game-page-header-game-info">{{ game_info['date'] }}, {{ game_info['start-time'] }}</span>
+                    <span class="game-page-header-game-info">{{ game_info['date'] }}, {{ game_info['start_time'] }}</span>
                 </div>
                 <div class="game-page-header-game-info-detail-wrapper">
                     <img class="detail-icon" src="{{ url_for('static', filename='location-icon.png') }}">
@@ -31,26 +31,26 @@
 
             <header class="game-page-header-result-container">
                 <section class="game-page-header-result-status-section">
-                    <a class="game-page-header-team-name-container-left" href="/{{ game_info['league']['name'] }}/team/{{ game_info['away-team']['id'] }}/season/{{ game_info['season']['year'] }}">
+                    <a class="game-page-header-team-name-container-left" href="/{{ game_info['league']['name'] }}/team/{{ game_info['away_team']['id'] }}/season/{{ game_info['season']['year'] }}">
                         <span class="team-name-header">
-                            {{ game_info['away-team']['name'] }}
+                            {{ game_info['away_team']['name'] }}
                         </span>
                         <div>
-                            <img class="team-logo-header" src="{{ game_info['away-team']['logo_url'] }}"/>
+                            <img class="team-logo-header" src="{{ game_info['away_team']['logo_url'] }}"/>
                         </div>
                     </a>
 
                     <div class="game-page-header-status-wrapper">
-                        {% if game_info['completed'] %}
+                        {% if game_info['completed'] or game_info['in_progress'] %}
                         <span class="game-page-header-score">
-                            {{ game_info['away-team']['score']['Total'] }} - {{ game_info['home-team']['score']['Total'] }}
+                            {{ game_info['away_team']['score'] }} - {{ game_info['home_team']['score'] }}
                         </span>
-                        <span class="secondary-font-color">
-                            Final
+                        <span class="{{ 'game-card-status-in-progress' if game_info['in_progress'] else 'secondary-font-color' }}">
+                            {{ game_info['status'] }}
                         </span>
                         {% else %}
                         <span class="game-page-header-score">
-                            {{ game_info['start-time'] }}
+                            {{ game_info['start_time'] }}
                         </span>
                         <span class="secondary-font-color">
                             {{ game_info['date'] }}
@@ -58,39 +58,42 @@
                         {% endif %}
                     </div>
 
-                    <a class="game-page-header-team-name-container-right" href="/{{ game_info['league']['name'] }}/team/{{ game_info['home-team']['id'] }}/season/{{ game_info['season']['year'] }}">
+                    <a class="game-page-header-team-name-container-right" href="/{{ game_info['league']['name'] }}/team/{{ game_info['home_team']['id'] }}/season/{{ game_info['season']['year'] }}">
                         <div>
-                            <img class="team-logo-header" src="{{ game_info['home-team']['logo_url'] }}"/>
+                            <img class="team-logo-header" src="{{ game_info['home_team']['logo_url'] }}"/>
                         </div>
                         <span class="team-name-header">
-                            {{ game_info['home-team']['name'] }}
+                            {{ game_info['home_team']['name'] }}
                         </span>
                     </a>
                 </section>
 
-                {% if game_info['completed'] %}
+                {% if game_info['completed'] or game_info['in_progress'] %}
                 <section class="game-page-header-boxscore-section">
                     <table class="game-page-boxscore-table table">
                         <thead>
                             <tr>
                                 <th></th>
-                                {% for period in game_info['home-team']['score'].keys() %}
-                                <th>{{ period }}</th>
+                                {% for p in game_info['format']['periods_list'] %}
+                                <th>{{ p }}</th>
                                 {% endfor%}
+                                <th>T</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th>{{ game_info['away-team']['name']}}</th>
-                                {% for score in game_info['away-team']['score'].values() %}
-                                <th>{{ score }}</th>
-                                {% endfor%}
+                                <th>{{ game_info['away_team']['name']}}</th>
+                                {% for score_dict in game_info['away_team']['linescores'] %}
+                                <th>{{ score_dict['displayValue'] }}</th>
+                                {% endfor %}
+                                <th>{{ game_info['away_team']['score'] }}</th>
                             </tr>
                             <tr>
-                                <th>{{ game_info['home-team']['name']}}</th>
-                                {% for score in game_info['home-team']['score'].values() %}
-                                <th>{{ score }}</th>
-                                {% endfor%}
+                                <th>{{ game_info['home_team']['name']}}</th>
+                                {% for score_dict in game_info['home_team']['linescores'] %}
+                                <th>{{ score_dict['displayValue'] }}</th>
+                                {% endfor %}
+                                <th>{{ game_info['home_team']['score'] }}</th>
                             </tr>
                         </tbody>
                     </table>

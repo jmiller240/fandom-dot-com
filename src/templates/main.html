@@ -20,10 +20,12 @@
                 
                 {% for league_obj in league_games %}
                 <div class="app-card">
-                    <div class="schedule-games-card-header">
-                        <img class="team-logo-detail" src="{{ league_obj['league']['logo_url'] }}"/>
-                        <span class="team-name-detail">{{ league_obj['league']['name'] }}</span>
-                    </div>
+                    <a href="/{{ league_obj['league']['name'] }}">
+                        <div class="schedule-games-card-header">
+                            <img class="team-logo-detail" src="{{ league_obj['league']['logo_url'] }}"/>
+                            <span class="team-name-detail">{{ league_obj['league']['name'] }}</span>
+                        </div>
+                    </a>
 
                     {% for game in league_obj['games_list'] %}
                     <a class="game-card" href="/{{ league_obj['league']['name'] }}/boxscore/{{ game['event_id'] }}">
