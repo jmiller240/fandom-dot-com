@@ -430,6 +430,19 @@
         border-bottom: 0.5px solid #f0f0f0;
     }
 
+    .schedule-pagination-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        font-size: 0.8em;
+    }
+
     /* Home / Team Page (Schedules) */
     .team-page-container {
         display: grid;
@@ -550,7 +563,9 @@
     }
 
     .game-card {
-        display: none;
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
 
         padding-left: 15px;
         padding-right: 15px;
@@ -559,13 +574,14 @@
 
         border-bottom: 0.5px solid #f0f0f0;
     }
-    .game-card.visible {
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 auto;
-    }
     .game-card:hover {
         opacity: 0.5;
+    }
+    .paginate {
+        display: none;
+    }
+    .paginate.visible {
+        display: flex;
     }
 
     .game-card-header {
@@ -840,13 +856,15 @@
     .nav-icon-wrapper:hover {
         opacity: 0.5;
         cursor: pointer;
-        /* background-color: #b8b8b8;
-        border-radius: 15px; */
     }
     .nav-icon {
-        /* height: 2em; */
         width: 2em;
     }
+    .nav-icon:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+    
     .detail-icon {
         height: 1em;
     }
