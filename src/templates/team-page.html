@@ -48,8 +48,12 @@
                         </div>
                         {% if game['completed'] or game['in_progress'] %}
                         <div class="game-card-result-wrapper">
-                            <span id="result" class="game-card-result-element">{{ game['game_score_string'] }}</span>
-                            <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">{{ game['status'] }}</span>
+                            <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-result'] == 'win' else 'result-card-loser' if game['selected-team-result'] == 'loss' else 'result-card-tie' }}">
+                                {{ game['game_score_string'] }}
+                            </span>
+                            <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">
+                                {{ game['status'] }}
+                            </span>
                         </div>
                         {% else %}
                         <div class="game-card-result-wrapper">

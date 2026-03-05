@@ -104,7 +104,6 @@ def main():
 
     # Games
     league_games = ESPNService.get_games(date=current_dt)
-    pprint.pprint(league_games)
 
     return render_template('main.html', league_games=league_games, date=date)
 

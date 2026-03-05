@@ -58,7 +58,10 @@
                         {% else %}
                         <div class="game-card-result-wrapper">
                             <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-result'] == 'win' else 'result-card-loser' if game['selected-team-result'] == 'loss' else 'result-card-tie' }}">
-                                {{ game['game-score-string'] if game['completed'] else game['time'] }}
+                                {{ game['game_score_string'] if game['completed'] else game['time'] }}
+                            </span>
+                            <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">
+                                {{ game['status'] }}
                             </span>
                         </div>
                         {% endif %}
