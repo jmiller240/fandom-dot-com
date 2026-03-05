@@ -15,7 +15,8 @@ CREATE TABLE fandom_site.account(
 CREATE TABLE fandom_site.league(
     id SERIAL PRIMARY KEY,
     espn_league_id INTEGER NOT NULL,
-    name VARCHAR(100) NOT NULL, 
+    name VARCHAR(100) NOT NULL,
+    display_name VARCHAR(100) NOT NULL,
     logo_url VARCHAR(255) NOT NULL,
     current_season VARCHAR(50) NOT NULL,
     current_season_type VARCHAR(50) NOT NULL

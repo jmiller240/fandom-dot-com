@@ -89,6 +89,7 @@ def get_league_info(league):
     league_info = {
         'espn_league_id': response['id'],
         'name': league,
+        'display_name': response['name'],
         'logo_url': response['logos'][0]['href'],
         'current_season': response['season']['year'],
         'current_season_type': response['season']['type']['type']
@@ -128,7 +129,7 @@ def get_league_teams_info(league):
 
     return teams_dict
 
-def main():
+def get_leagues_df():
     # League info
     leagues = []
     for league in LEAGUE_MAPPER.keys():
@@ -137,7 +138,10 @@ def main():
         leagues.append(info)
 
     leagues_df = pd.DataFrame.from_records(leagues)
-    
+
+    return leagues_df
+
+def get_teams_df():
     # Teams
     teams = []
     for league in LEAGUE_MAPPER.keys():
@@ -147,11 +151,22 @@ def main():
     
     teams_df = pd.DataFrame.from_records(data=teams)
 
+    return teams_df
+
+def main():
+    
+    # Leagues
+    leagues_df = get_leagues_df()
     print(leagues_df.head().to_string())
+
+    # Teams
+    teams_df = get_teams_df()
     print(teams_df.head().to_string())
 
     # Export
     leagues_df.to_csv('leagues_df.csv', index=False)
     teams_df.to_csv('teams_df.csv', index=False)
 
-main()
+
+if __name__ == '__main__':
+    main()

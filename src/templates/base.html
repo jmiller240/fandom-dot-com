@@ -120,18 +120,53 @@
         </div>
 
         <div id="app-footer">
-            <div>(C) Jack Miller 2025</div>
+            <div>&copy Jack Miller 2026</div>
         </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const PAGE_SIZE = 10;
+                const LOOK_BACK = 5;   // finished games to show before the boundary
+                const cards = Array.from(document.querySelectorAll(".game-card"));
+                console.log('Card length: ', cards.length)
+
+                // Find the index of the first non-finished game
+                const boundaryIndex = cards.findIndex(
+                    c => c.dataset.status !== "complete"
+                );
+
+                // If all games are finished, start at the last page; if none finished, start at 0
+                const anchorIndex = boundaryIndex === -1 ? cards.length : boundaryIndex;
+
+                // The default page starts LOOK_BACK games before the boundary
+                const defaultStartIndex = Math.max(0, anchorIndex - LOOK_BACK);
+
+                // Convert a card index to a page number
+                const getPage = (cardIndex) => Math.floor(cardIndex / PAGE_SIZE);
+                let currentPage = getPage(defaultStartIndex);
+                const totalPages = Math.ceil(cards.length / PAGE_SIZE);
+
+                function showPage(page) {
+                    currentPage = Math.max(0, Math.min(page, totalPages - 1));
+                    const start = currentPage * PAGE_SIZE;
+                    const end = start + PAGE_SIZE;
+
+                    cards.forEach((card, i) => {
+                    card.classList.toggle("visible", i >= start && i < end);
+                    });
+
+                    document.getElementById("page-label").textContent =
+                    `Page ${currentPage + 1} of ${totalPages}`;
+                    document.getElementById("btn-prev").disabled = currentPage === 0;
+                    document.getElementById("btn-next").disabled = currentPage === totalPages - 1;
+                }
+
+                document.getElementById("btn-prev").addEventListener("click", () => showPage(currentPage - 1));
+                document.getElementById("btn-next").addEventListener("click", () => showPage(currentPage + 1));
+
+                showPage(currentPage);
+            });
+        </script>
+
     </body>
 </html>
-
-
-<style>
-    
-</style>
-
-<script>
-    function onclick() {
-        window.fetch('/suk')
-    }
-</script>

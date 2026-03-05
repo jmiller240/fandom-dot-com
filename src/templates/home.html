@@ -2,23 +2,6 @@
 
 {% block content %}
     <div class="page-container">
-        <!-- <div class="page-header">
-            <header class="team-page-header">
-                {% if teams_list %}
-                {% for team in teams_list %}
-                <div class="team-page-header-logo-wrapper">
-                    <a href="/{{ team['league']['name'] }}/team/{{ team['espn_id'] }}/season/{{ season }}">
-                        <img class="team-header-logo" src="{{ team['logo_url'] }}"/>
-                    </a>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div>
-                    No teams yet
-                </div>
-                {% endif %}
-            </header>
-        </div> -->
 
         <div class="page-content">
             <div class="app-card team-page-games-container">
@@ -35,39 +18,45 @@
                     </a>
                 </div>
                 {% for game in games_list %}
-                <a class="game-card" href="/{{ game['league']['name'] }}/boxscore/{{ game['event_id'] }}">
+                <a class="game-card" href="/{{ game['league']['name'] }}/boxscore/{{ game['event_id'] }}"> 
                     <div class="game-card-header">
                         <span class="grid-align-left">{{ game['date'] }}</span>
                         <span class="grid-align-center">{{game['headline']}}</span>
                         <div class="league-container grid-align-right">
-                            <span class="league-name">{{game['league']['name'] + ' ' + game['season']['type'] }}</span>
-                            <img class="league-logo" src="{{ game['league']['logo-url'] }}"/>
+                            <span class="league-name">{{game['league']['name'] + ' ' + game['season']['name'] }}</span>
+                            <img class="league-logo" src="{{ game['league']['logo_url'] }}"/>
                         </div>
                     </div>
                     <div class="game-card-result">
                         <div id="away-team" class="game-card-away-team-container">
-                            <p class="game-card-team-name">{{ game['away-team'] }}</p>
-                            <img class="team-logo-detail" src="{{ game['away-team-logo'] }}"/>
+                            <p class="game-card-team-name">{{ game['away_team']['name'] }}</p>
+                            <img class="team-logo-detail" src="{{ game['away_team']['logo_url'] }}"/>
                         </div>
-                        {% if game['completed'] == False %}
+                        {% if game['completed'] or game['in_progress'] %}
+                        <div class="game-card-result-wrapper">
+                            {% if game['in_progress'] %}
+                            <span id="result" class="game-card-result-element">
+                                {{ game['away_team']['score'] }} - {{ game['home_team']['score'] }}
+                            </span>
+                            {% else %}
+                            <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected_team_result'] == 'win' else 'result-card-loser' if game['selected_team_result'] == 'loss' else 'result-card-tie' }}">
+                                {{ game['away_team']['score'] }} - {{ game['home_team']['score'] }}
+                            </span>
+                            {% endif %}
+                            <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">
+                                {{ game['status'] }}
+                            </span>
+                        </div>
+                        {% else %}
                         <div class="game-card-result-wrapper">
                             <span id="result" class="game-card-result-element">
                                 {{ game['time'] }}
                             </span>
                         </div>
-                        {% else %}
-                        <div class="game-card-result-wrapper">
-                            <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-result'] == 'win' else 'result-card-loser' if game['selected-team-result'] == 'loss' else 'result-card-tie' }}">
-                                {{ game['game_score_string'] if game['completed'] else game['time'] }}
-                            </span>
-                            <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">
-                                {{ game['status'] }}
-                            </span>
-                        </div>
                         {% endif %}
                         <div id="home-team" class="game-card-home-team-container">
-                            <img class="team-logo-detail" src="{{ game['home-team-logo'] }}"/>
-                            <p class="game-card-team-name">{{ game['home-team'] }}</p>
+                            <img class="team-logo-detail" src="{{ game['home_team']['logo_url'] }}"/>
+                            <p class="game-card-team-name">{{ game['home_team']['name'] }}</p>
                         </div>
                     </div>
                 </a>

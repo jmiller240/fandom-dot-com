@@ -6,7 +6,7 @@ import sys
 import pandas as pd
 
 from connect_postgres import get_postgres_url_local, get_postgres_url_aws, get_postgres_url_render
-
+from get_leagues_teams import get_teams_df, get_leagues_df
 
 def create_database(loc: str):
 
@@ -39,7 +39,7 @@ def create_database(loc: str):
         cursor.execute(q)
         print('Query complete.')
 
-    print('All done.')
+    print('Schema and tables created.')
     cursor.close()
     connection.commit()
 
@@ -93,6 +93,7 @@ def populate_database_espn_apis(loc: str):
 
     # Start with leagues
     print(f'Getting leagues...')
+    # df = get_leagues_df()
     df = pd.read_csv(f'data_new/leagues_df.csv')
     print(df.head())
 
@@ -112,6 +113,7 @@ def populate_database_espn_apis(loc: str):
     
     # Then teams
     print(f'Getting teams...')
+    # df = get_teams_df()
     df = pd.read_csv(f'data_new/teams_df.csv')
     df['color'] = df['color'].fillna('#ffffff')
     df['league_id'] = df['league'].map(league_ids)
@@ -125,14 +127,11 @@ def populate_database_espn_apis(loc: str):
     print(f'Data inserted. {rows_inserted:,} rows')
 
 
-
 if __name__ == '__main__':
     loc = ''
     if len(sys.argv) > 1:
         loc = sys.argv[1]
-        # create_database(loc=loc)
-        # populate_database_local_files(loc=loc)
-
+        create_database(loc=loc)
         populate_database_espn_apis(loc=loc)
 
     else:

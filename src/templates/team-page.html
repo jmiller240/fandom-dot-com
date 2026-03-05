@@ -31,26 +31,38 @@
                     </a>
                 </div>
 
+                <div class="pagination">
+                    <button id="btn-prev">← Previous</button>
+                    <span id="page-label"></span>
+                    <button id="btn-next">Next →</button>
+                </div>
+
                 {% for game in games_list %}
-                <a class="game-card" href="/{{ team['league']['name'] }}/boxscore/{{ game['event_id'] }}">
+                <a class="game-card" href="/{{ team['league']['name'] }}/boxscore/{{ game['event_id'] }}" data-status="{{ 'complete' if game['completed'] else 'upcoming' }}" data-index="{{ loop.index0 }}">
                     <div class="game-card-header">
                         <span class="grid-align-left">{{ game['date'] }}</span>
                         <span class="grid-align-center">{{game['headline']}}</span>
                         <div class="league-container grid-align-right">
-                            <span class="league-name">{{team['league']['name'] + ' ' + game['season']['type'] }}</span>
+                            <span class="league-name">{{team['league']['name'] + ' ' + game['season']['name'] }}</span>
                             <img class="league-logo" src="{{ team['league']['logo_url'] }}"/>
                         </div>
                     </div>
                     <div class="game-card-result">
                         <div id="away-team" class="game-card-away-team-container">
-                            <p class="game-card-team-name">{{ game['away-team'] }}</p>
-                            <img class="team-logo-detail" src="{{ game['away-team-logo'] }}"/>
+                            <p class="game-card-team-name">{{ game['away_team']['name'] }}</p>
+                            <img class="team-logo-detail" src="{{ game['away_team']['logo_url'] }}"/>
                         </div>
                         {% if game['completed'] or game['in_progress'] %}
                         <div class="game-card-result-wrapper">
-                            <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected-team-result'] == 'win' else 'result-card-loser' if game['selected-team-result'] == 'loss' else 'result-card-tie' }}">
-                                {{ game['game_score_string'] }}
+                            {% if game['in_progress'] %}
+                            <span id="result" class="game-card-result-element">
+                                {{ game['away_team']['score'] }} - {{ game['home_team']['score'] }}
                             </span>
+                            {% else %}
+                            <span id="result" class="game-card-result-element {{ 'result-card-winner' if game['selected_team_result'] == 'win' else 'result-card-loser' if game['selected_team_result'] == 'loss' else 'result-card-tie' }}">
+                                {{ game['away_team']['score'] }} - {{ game['home_team']['score'] }}
+                            </span>
+                            {% endif %}
                             <span id="result" class="game-card-result-element {{ 'game-card-status-in-progress' if game['in_progress'] }}">
                                 {{ game['status'] }}
                             </span>
@@ -63,8 +75,8 @@
                         </div>
                         {% endif %}
                         <div id="home-team" class="game-card-home-team-container">
-                            <img class="team-logo-detail" src="{{ game['home-team-logo'] }}"/>
-                            <p class="game-card-team-name">{{ game['home-team'] }}</p>
+                            <img class="team-logo-detail" src="{{ game['home_team']['logo_url'] }}"/>
+                            <p class="game-card-team-name">{{ game['home_team']['name'] }}</p>
                         </div>
                     </div>
                 </a>
