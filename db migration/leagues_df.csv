@@ -1,0 +1,14 @@
+espn_league_id,name,display_name,logo_url,current_season,current_season_type
+28,NFL,National Football League,https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png,2025,4
+46,NBA,National Basketball Association,https://a.espncdn.com/i/teamlogos/leagues/500/nba.png,2026,2
+10,MLB,Major League Baseball,https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png,2026,1
+90,NHL,National Hockey League,https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png,2026,2
+23,CFB,NCAA - Football,https://a.espncdn.com/redesign/assets/img/icons/ESPN-icon-football-college.png,2026,1
+41,MCBB,NCAA Men's Basketball,https://a.espncdn.com/redesign/assets/img/icons/ESPN-icon-basketball.png,2026,2
+54,WCBB,NCAA Women's Basketball,https://a.espncdn.com/redesign/assets/img/icons/ESPN-icon-basketball.png,2026,2
+700,ENG,English Premier League,https://a.espncdn.com/i/leaguelogos/soccer/500/23.png,2025,13481
+740,ESP,Spanish LALIGA,https://a.espncdn.com/i/leaguelogos/soccer/500/15.png,2025,13561
+720,GER,German Bundesliga,https://a.espncdn.com/i/leaguelogos/soccer/500/10.png,2025,13547
+730,ITA,Italian Serie A,https://a.espncdn.com/i/leaguelogos/soccer/500/12.png,2025,13447
+710,FRA,French Ligue 1,https://a.espncdn.com/i/leaguelogos/soccer/500/9.png,2025,13546
+770,MLS,MLS,https://a.espncdn.com/i/leaguelogos/soccer/500/19.png,2026,13846

@@ -64,6 +64,7 @@ def get_league_dict(league: League) -> dict:
     league_info = {
         'espn_id': league.espn_league_id,
         'name': league.name,
+        'display_name': league.display_name,
         'logo_url': league.logo_url,
         'current_season': league.current_season,
         'current_season_type': league.current_season_type
@@ -104,7 +105,6 @@ def main():
 
     # Games
     league_games = ESPNService.get_games(date=current_dt)
-    pprint.pprint(league_games)
 
     return render_template('main.html', league_games=league_games, date=date)
 
@@ -213,7 +213,6 @@ def team_selection():
             print(f'team {i}')
             
             # Get info from DB
-            # t: Team = Team.query.filter_by(id=i).first()
             t = DBService.get_team(id=i)
 
             # Insert to DB
@@ -229,7 +228,6 @@ def team_selection():
         for i in user_team_ids:
             if i not in form_team_ids:
                 # Get info from DB
-                # t: Team = Team.query.filter_by(id=i).first()
                 t = DBService.get_team(id=i)
 
                 print(f'Removing {t.id}')
@@ -259,15 +257,20 @@ def home():
         # Get team info
         team_info = get_team_info(team=team, season=season)
         league = DBService.get_league(team.league_id)
-
+        
         # Get schedule
         games = ESPNService.get_team_schedule(league=league.name, team_id=team.espn_team_id, season=season)
+
+        # Add league to games
+        for game in games:
+            game['league'] = {
+                'name': league.name,
+                'logo_url': league.logo_url
+            }
 
         master_teams_info.append(team_info)
         master_games.extend(games)
 
     master_games = sorted(master_games, key=lambda game: game['datetime'])
-
-    # pprint.pprint(master_games[:5])
 
     return render_template('home.html', teams_list=master_teams_info, games_list=master_games, season=season)

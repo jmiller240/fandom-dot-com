@@ -19,7 +19,6 @@ class BaseModel(db.Model):
 
 
 
-
 # Define the association table (bridge table)
 account_team_m2m = Table(
     "account_team",
@@ -53,6 +52,7 @@ class League(BaseModel):
     id = Column(Integer, primary_key=True)
     espn_league_id = Column(Integer)
     name = Column(String)
+    display_name = Column(String)
     logo_url = Column(String)
     current_season = Column(String)
     current_season_type = Column(String)
