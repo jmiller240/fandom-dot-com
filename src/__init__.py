@@ -9,7 +9,8 @@ Module home, provides function that creates application.
 import os
 from dotenv import load_dotenv
 
-from flask import Flask
+from flask import Flask, render_template
+from werkzeug.exceptions import HTTPException, InternalServerError
 
 # Application
 from src.extensions import db, login_manager
@@ -32,9 +33,11 @@ def create_app():
 
     ## App ##
     app = Flask(__name__)
+
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = 'any random string'
+    app.config["DEBUG"] = (env == 'DEV')
 
     # Add blueprints
     app.register_blueprint(accounts_bp)
@@ -60,5 +63,18 @@ def create_app():
         return {
             'leagues': LEAGUES.keys()
         }
+    
+    # Add error handlers
+    @app.errorhandler(404)
+    @app.errorhandler(403)
+    @app.errorhandler(500)
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        if not isinstance(e, HTTPException):
+            app.logger.exception(e)
+            e = InternalServerError('Something went wrong on our end. Try refreshing, or check back shortly.')
+
+        return render_template("error.html", error=e), e.code
+
 
     return app

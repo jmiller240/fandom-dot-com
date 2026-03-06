@@ -134,16 +134,14 @@
                 const boundaryIndex = cards.findIndex(
                     c => c.dataset.status !== "complete"
                 );
-                
+                console.log('boundary index ', boundaryIndex)
+
                 // If all games are finished, start at the last page; if none finished, start at 0
-                let anchorIndex = 0
                 let defaultStartIndex = 0
                 if (boundaryIndex === -1) {
-                    anchorIndex = cards.length
                     defaultStartIndex = cards.length
                 } else {
-                    anchorIndex = boundaryIndex
-                    defaultStartIndex = Math.max(0, anchorIndex - LOOK_BACK)
+                    defaultStartIndex = boundaryIndex //.max(0, boundaryIndex - LOOK_BACK)
                 }
 
                 // Convert a card index to a page number

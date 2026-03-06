@@ -31,6 +31,7 @@
                     </a>
                 </div>
                 
+                {% if games_list|length > 0 %}
                 <div class="app-card">
                     <div class="schedule-pagination-header">
                         <img id="btn-prev" class="nav-icon" src="{{ url_for('static', filename='back-icon-no-circle.png') }}">
@@ -83,6 +84,7 @@
                     </a>
                     {% endfor %}
                 </div>
+                {% endif %}
             </div>
 
             <div class="team-page-info-container">

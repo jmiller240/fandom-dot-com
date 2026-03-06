@@ -111,6 +111,8 @@ class ESPNAPIService:
 
         # Process records
         record_obj = {}
+        
+        # if 'record' in response['team']: 
         for record in response['team']['record']:
             record_name = record['name']
             record_value = record['displayValue']
@@ -196,6 +198,8 @@ class ESPNAPIService:
 
                 games.append(game_dict)
         
+        games = sorted(games, key=lambda game: game['datetime'])
+
         return games
 
 
